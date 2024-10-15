@@ -1,29 +1,34 @@
 package com.angrybirds;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class angryBirds extends ApplicationAdapter {
-    private SpriteBatch batch;
-    private Texture image;
+public class angryBirds extends Game {
+
+    public static final String TITLE = "Slides";
+    public SpriteBatch batch;
+    public Texture image;
+    public OrthographicCamera camera;
+
+    public BitmapFont font;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
+        camera = new OrthographicCamera();
+        font = new BitmapFont();
+
+        this.setScreen(new SplashScreen(this)); // Sets SplashScreen
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+        super.render();  // Render the active screen (e.g., SplashScreen)
     }
 
     @Override
