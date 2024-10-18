@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
@@ -19,24 +20,26 @@ public class LoadingScreen implements Screen {
         this.app = app;
         this.shapeRenderer = new ShapeRenderer();
 
-        this.progress = 0f;
-
-        queueAssets();
     }
 
     private void queueAssets() {
         app.assets.load("splash.png", Texture.class);
+        app.assets.load("skin/uiskin.atlas", TextureAtlas.class);
     }
 
     @Override
     public void show() {
         System.out.println("LoadingScreen show");
 
+        this.progress = 0f;
+
+        queueAssets();
+
     }
     private void update(float delta) {
         progress = MathUtils.lerp(progress, app.assets.getProgress() ,.1f);
         if(app.assets.update() && progress>=(app.assets.getProgress()-.1f)){
-            app.setScreen(new SplashScreen(app));
+            app.setScreen(app.splashScreen);
         }
 
 
@@ -58,7 +61,7 @@ public class LoadingScreen implements Screen {
         shapeRenderer.end();
 
         app.batch.begin();
-        app.font.draw(app.batch, "Loading", 20, 20);
+        app.font24.draw(app.batch, "Loading", 20, 20);
         app.batch.end();
     }
 

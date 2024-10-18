@@ -25,22 +25,31 @@ public class SplashScreen implements Screen{
         this.stage = new Stage(new StretchViewport(angryBirds.V_WIDTH , angryBirds.V_HEIGHT , app.camera));
         Gdx.input.setInputProcessor(stage);
 
-//        Texture splashTex = new Texture("splash.png");
-        Texture splashTex = app.assets.get("splash.png" , Texture.class);
-        splashImg = new Image(splashTex);
-        splashImg.setOrigin(splashImg.getWidth()/2, splashImg.getHeight()/2);
-
-
-        stage.addActor(splashImg);
+//
     }
     @Override
     public void show() {
         System.out.println("SplashScreen show");
+        // Texture splashTex = new Texture("splash.png");
+        Texture splashTex = app.assets.get("splash.png" , Texture.class);
+
+        Runnable transitionRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                app.setScreen(new MainMenuScreen(app));
+            }
+        };
+        splashImg = new Image(splashTex);
+        splashImg.setOrigin(splashImg.getWidth()/2, splashImg.getHeight()/2);
+
         splashImg.setPosition(stage.getWidth()/2 -32, stage.getHeight()/2 + 32);
 //        splashImg.addAction(sequence(alpha(0f), parallel(moveBy(30,20,2f),fadeIn(2f))));
 
-        splashImg.addAction(sequence(alpha(0), scaleTo(.1f,.1f), parallel(fadeIn(2f, Interpolation.pow2),scaleTo(2f,2f,2.5f, Interpolation.pow5), moveTo(stage.getWidth()/2-32, stage.getHeight()/2-32 , 2f,Interpolation.swing)),delay(1.5f), fadeOut(1.25f)));
+        splashImg.addAction(sequence(alpha(0), scaleTo(.1f,.1f), parallel(fadeIn(2f, Interpolation.pow2),scaleTo(2f,2f,2.5f, Interpolation.pow5), moveTo(stage.getWidth()/2-32, stage.getHeight()/2-32 , 2f,Interpolation.swing)),delay(1.5f), fadeOut(1.25f), run(transitionRunnable)));
 
+
+        stage.addActor(splashImg);
     }
 
     @Override
@@ -52,7 +61,7 @@ public class SplashScreen implements Screen{
         stage.draw();
 
         app.batch.begin();
-        app.font.draw(app.batch, "SplashScreen" ,20,20);
+        app.font24.draw(app.batch, "SplashScreen" ,20,20);
         app.batch.end();
     }
     public void update(float delta){
