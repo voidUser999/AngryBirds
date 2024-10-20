@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -26,8 +27,9 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
 
     private Skin skin;
-
+    private Image splashImg;
     private TextButton buttonPlay , buttonExit;
+
 
 
     private ShapeRenderer shapeRenderer;
@@ -45,12 +47,23 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         stage.clear();
+        Texture splashTex = app.assets.get("abc.png", Texture.class);
+
         this.skin = new Skin();
         this.skin.addRegions(app.assets.get("skin/uiskin.atlas" , TextureAtlas.class));
         this.skin.add("default-font", app.font24);
         this.skin.load(Gdx.files.internal("uiskin.json"));
-        System.out.println("XWFC");
+        splashImg = new Image(splashTex);
+        splashImg.setHeight(stage.getHeight());
+        splashImg.setWidth(stage.getWidth());
 
+
+        System.out.println("XWFC");
+        stage.addActor(splashImg);
+        //splashImg.setOrigin(splashImg.getWidth()/2, splashImg.getHeight()/2);
+
+        splashImg.setPosition(0, 0);
+      //  splashImg.addAction(sequence(alpha(0), scaleTo(.1f,.1f), parallel(fadeIn(2f, Interpolation.pow2),scaleTo(2f,2f,2.5f, Interpolation.pow5), moveTo(stage.getWidth()/2-32, stage.getHeight()/2-32 , 2f,Interpolation.swing)),delay(1.5f), fadeOut(1.25f)));
         initButtons();
 
 
@@ -58,7 +71,7 @@ public class MainMenuScreen implements Screen {
 
     private void initButtons() {
             buttonPlay = new TextButton("Play", skin, "default");
-            buttonPlay.setPosition(860 , 400);
+            buttonPlay.setPosition(810 , 350);
             buttonPlay.setSize(280 , 60);
 
             buttonPlay.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
@@ -71,7 +84,7 @@ public class MainMenuScreen implements Screen {
 
 
             buttonExit = new TextButton("Exit", skin, "default");
-            buttonExit.setPosition(860 , 320);
+            buttonExit.setPosition(810 , 270);
             buttonExit.setSize(280 , 60);
             buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
             buttonExit.addListener(new ClickListener() {
@@ -106,8 +119,8 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, false);
     }
 
     @Override

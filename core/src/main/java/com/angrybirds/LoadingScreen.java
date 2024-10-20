@@ -23,8 +23,10 @@ public class LoadingScreen implements Screen {
     }
 
     private void queueAssets() {
+        app.assets.load("rovio.png", Texture.class);
         app.assets.load("splash.png", Texture.class);
         app.assets.load("skin/uiskin.atlas", TextureAtlas.class);
+        app.assets.load("abc.png", Texture.class);
     }
 
     @Override
@@ -88,5 +90,6 @@ public class LoadingScreen implements Screen {
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+
     }
 }

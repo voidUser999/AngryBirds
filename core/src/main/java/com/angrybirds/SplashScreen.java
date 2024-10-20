@@ -31,7 +31,7 @@ public class SplashScreen implements Screen{
     public void show() {
         System.out.println("SplashScreen show");
         // Texture splashTex = new Texture("splash.png");
-        Texture splashTex = app.assets.get("splash.png" , Texture.class);
+        Texture splashTex = app.assets.get("rovio.png" , Texture.class);
 
         Runnable transitionRunnable = new Runnable() {
 
@@ -41,6 +41,8 @@ public class SplashScreen implements Screen{
             }
         };
         splashImg = new Image(splashTex);
+        splashImg.setHeight((float) splashTex.getHeight() /3);
+        splashImg.setWidth((float) splashTex.getWidth() /3);
         splashImg.setOrigin(splashImg.getWidth()/2, splashImg.getHeight()/2);
 
         splashImg.setPosition(stage.getWidth()/2 -32, stage.getHeight()/2 + 32);
@@ -62,6 +64,7 @@ public class SplashScreen implements Screen{
 
         app.batch.begin();
         app.font24.draw(app.batch, "SplashScreen" ,20,20);
+        app.font24.draw(app.batch, "2009-2024 Rovio Entertainment Corporation. Angry Birds , Rovio , Mighty Eagle, Bad Piggies and \n the Angry Birds figure are trademarks of Rovio Entertainmet Copropation . All rights reserved" , 460 , 100);
         app.batch.end();
     }
     public void update(float delta){
@@ -92,5 +95,6 @@ public class SplashScreen implements Screen{
     public void dispose() {
         System.out.println("Disposing ");
         stage.dispose();
+
     }
 }

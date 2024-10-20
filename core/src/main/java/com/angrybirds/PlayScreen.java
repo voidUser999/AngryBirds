@@ -31,6 +31,7 @@ public class PlayScreen implements Screen {
         this.app = app;
         this.stage = new Stage(new StretchViewport(angryBirds.V_WIDTH, angryBirds.V_HEIGHT , app.camera));
         map = new TmxMapLoader().load("map/map_1.tmx");
+
         tmr = new OrthoCachedTiledMapRenderer(map);
     }
 
@@ -47,18 +48,26 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-            Gdx.gl.glClearColor(1, 1, 1, 1);
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-            update(delta);
+        // Enable blending for transparency
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-            app.batch.begin();
-            app.font24.draw(app.batch, "SCREEN:PLAY" , 20 ,20);
-            app.batch.end();
+        update(delta);
 
-            tmr.render();
+        // Render the TiledMap layers (all layers will be affected by the blend state)
+        tmr.render();
 
+        app.batch.begin();
+        app.font24.draw(app.batch, "SCREEN:PLAY", 20, 20);
+        app.batch.end();
+
+        // Disable blending after rendering
+        Gdx.gl.glDisable(GL20.GL_BLEND);
     }
+
 
     @Override
     public void resize(int width, int height) {
