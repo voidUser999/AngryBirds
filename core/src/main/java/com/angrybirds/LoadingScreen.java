@@ -27,6 +27,9 @@ public class LoadingScreen implements Screen {
         app.assets.load("splash.png", Texture.class);
         app.assets.load("skin/uiskin.atlas", TextureAtlas.class);
         app.assets.load("abc.png", Texture.class);
+        app.assets.load("cat.png", Texture.class);
+        app.assets.load("pause.png", Texture.class);
+        app.assets.load("ab_name.png", Texture.class);
     }
 
     @Override
@@ -49,7 +52,7 @@ public class LoadingScreen implements Screen {
     }
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(11f, 1f, 1f, 1f);
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         update(delta);

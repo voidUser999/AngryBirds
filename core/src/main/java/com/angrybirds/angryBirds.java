@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthoCachedTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class angryBirds extends Game {
@@ -31,6 +33,11 @@ public class angryBirds extends Game {
     public SplashScreen splashScreen;
     public MainMenuScreen mainMenuScreen;
     public PlayScreen playScreen;
+    public Level_1 level_1;
+    public Lvl_1 lvl_1;
+//    private Box2DDebugRenderer b2dr;
+//    private World world;
+//    private Body body;
 
 
     @Override
@@ -39,6 +46,7 @@ public class angryBirds extends Game {
         batch = new SpriteBatch();
         image = new Texture("libgdx.png");
         camera = new OrthographicCamera();
+
 
 
         camera.setToOrtho(false, V_WIDTH, V_HEIGHT);
@@ -52,11 +60,14 @@ public class angryBirds extends Game {
         splashScreen = new SplashScreen(this);
         mainMenuScreen = new MainMenuScreen(this);
         playScreen = new PlayScreen(this);
+        level_1 = new Level_1(this);
+        lvl_1 = new Lvl_1(this);
         this.setScreen(loadingScreen); // Sets SplashScreen
     }
 
     @Override
     public void render() {
+
         super.render();  // Render the active screen (e.g., SplashScreen)
     }
 
@@ -71,7 +82,8 @@ public class angryBirds extends Game {
         loadingScreen.dispose();
         mainMenuScreen.dispose();
         playScreen.dispose();
-
+        level_1.dispose();
+        lvl_1.dispose();
     }
 
     private void initFonts() {
@@ -82,4 +94,6 @@ public class angryBirds extends Game {
         params.color = Color.BLACK;
         font24 = generator.generateFont(params);
     }
+
+
 }

@@ -1,0 +1,200 @@
+package com.angrybirds;
+
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+import static utils.Constants.PPM;
+
+public class Lvl_1 implements Screen {
+
+    private final angryBirds app;
+    private Stage stage;
+    private Stage pauseStage;
+
+    private OrthogonalTiledMapRenderer tmr;
+    private TiledMap map;
+    private Texture tex, resumeTex, exitTex , savexTex;
+    private ImageButton back;
+
+    private boolean isPaused = false;
+
+    public Lvl_1(final angryBirds app) {
+        this.app = app;
+        this.stage = new Stage(new StretchViewport(angryBirds.V_WIDTH, angryBirds.V_HEIGHT, app.camera));
+        Gdx.input.setInputProcessor(stage);
+
+        tex = new Texture("pause.png");
+
+        // Initialize pause menu textures
+        resumeTex = new Texture("paus.png");
+        exitTex = new Texture("splash.png");
+        savexTex = new Texture("splash.png");
+
+    }
+
+    @Override
+    public void show() {
+        map = new TmxMapLoader().load("map/level1.tmx");
+        tmr = new OrthogonalTiledMapRenderer(map);
+
+        stage.clear();
+
+
+        initButtons();
+        initPauseMenu();
+    }
+
+    private void initButtons() {
+        back = new ImageButton(new TextureRegionDrawable(tex));
+        back.setPosition(20, 900);
+        back.setSize(200, 200);
+
+        back.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
+        stage.addActor(back);
+
+        back.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = true;  // Pause the game
+                Gdx.input.setInputProcessor(pauseStage);  // Switch input to pause menu
+            }
+        });
+    }
+
+    private void initPauseMenu() {
+        pauseStage = new Stage(new StretchViewport(angryBirds.V_WIDTH, angryBirds.V_HEIGHT, app.camera));
+        Texture blackTexture = new Texture("blk.png");
+        Texture whiteTexture = new Texture("file.png");
+
+        Image background = new Image(new TextureRegionDrawable(blackTexture));
+        Image mmb = new Image(new TextureRegionDrawable(whiteTexture));
+         // A black texture
+
+        background.setSize(angryBirds.V_WIDTH, angryBirds.V_HEIGHT);
+        background.setColor(1, 1, 1, 0.3f);
+
+        mmb.setPosition(500 , 100);
+
+        pauseStage.addActor(background);
+        pauseStage.addActor(mmb);
+
+
+        // Resume button
+        ImageButton resumeButton = new ImageButton(new TextureRegionDrawable(resumeTex));
+        resumeButton.setPosition((float) angryBirds.V_WIDTH / 2 - 325, (float) angryBirds.V_HEIGHT / 2 -20);
+        resumeButton.setSize(200, 300);
+
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = false;  // Resume the game
+
+                Gdx.input.setInputProcessor(stage);  // Switch back to the game stage
+            }
+        });
+
+        // Exit button
+        ImageButton exitButton = new ImageButton(new TextureRegionDrawable(exitTex));
+        exitButton.setPosition((float) angryBirds.V_WIDTH / 2 - 100, (float) angryBirds.V_HEIGHT / 2 - 100);
+        exitButton.setSize(200, 100);
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = false;
+                app.setScreen(app.mainMenuScreen);  // Exit the application
+            }
+        });
+
+        ImageButton sav_exitButton = new ImageButton(new TextureRegionDrawable(savexTex));
+        sav_exitButton.setPosition((float) angryBirds.V_WIDTH / 2 - 100, (float) angryBirds.V_HEIGHT / 2 - 200);
+        sav_exitButton.setSize(200, 100);
+
+        sav_exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                isPaused = false;
+                app.setScreen(app.mainMenuScreen);  // Exit the application
+            }
+        });
+
+        // Add buttons to pauseStage
+        pauseStage.addActor(resumeButton);
+        pauseStage.addActor(exitButton);
+        pauseStage.addActor(sav_exitButton);
+    }
+
+    @Override
+    public void render(float delta) {
+        Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.input.setInputProcessor(stage);
+
+
+        if (!isPaused) {
+            update(delta);
+            tmr.render();
+            stage.draw();
+        } else {
+            Gdx.input.setInputProcessor(pauseStage);
+            // Draw the pause menu
+            tmr.render();
+            pauseStage.act(delta);
+            pauseStage.draw();
+        }
+
+    }
+
+    public void update(float delta) {
+        stage.act(delta);
+        tmr.setView(app.camera);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        stage.getViewport().update(width, height, false);
+        pauseStage.getViewport().update(width, height, false);
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void hide() {
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        pauseStage.dispose();
+        tmr.dispose();
+        map.dispose();
+        tex.dispose();
+        resumeTex.dispose();
+        exitTex.dispose();
+        savexTex.dispose();
+
+
+    }
+}

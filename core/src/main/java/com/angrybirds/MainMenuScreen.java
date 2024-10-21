@@ -29,6 +29,7 @@ public class MainMenuScreen implements Screen {
     private Skin skin;
     private Image splashImg;
     private TextButton buttonPlay , buttonExit;
+    private Image splashImg2;
 
 
 
@@ -48,7 +49,7 @@ public class MainMenuScreen implements Screen {
 
         stage.clear();
         Texture splashTex = app.assets.get("abc.png", Texture.class);
-
+        Texture splashTex2 = app.assets.get("ab_name.png", Texture.class);
         this.skin = new Skin();
         this.skin.addRegions(app.assets.get("skin/uiskin.atlas" , TextureAtlas.class));
         this.skin.add("default-font", app.font24);
@@ -57,11 +58,16 @@ public class MainMenuScreen implements Screen {
         splashImg.setHeight(stage.getHeight());
         splashImg.setWidth(stage.getWidth());
 
+        splashImg2 = new Image(splashTex2);
+//        splashImg2.setHeight(stage.getHeight());
+//        splashImg2.setWidth(stage.getWidth());
+
 
         System.out.println("XWFC");
         stage.addActor(splashImg);
+        stage.addActor(splashImg2);
         //splashImg.setOrigin(splashImg.getWidth()/2, splashImg.getHeight()/2);
-
+        splashImg2.setPosition(600  , 800);
         splashImg.setPosition(0, 0);
       //  splashImg.addAction(sequence(alpha(0), scaleTo(.1f,.1f), parallel(fadeIn(2f, Interpolation.pow2),scaleTo(2f,2f,2.5f, Interpolation.pow5), moveTo(stage.getWidth()/2-32, stage.getHeight()/2-32 , 2f,Interpolation.swing)),delay(1.5f), fadeOut(1.25f)));
         initButtons();
@@ -78,7 +84,7 @@ public class MainMenuScreen implements Screen {
             buttonPlay.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    app.setScreen(app.playScreen);
+                    app.setScreen(app.lvl_1);
                 }
             });
 
