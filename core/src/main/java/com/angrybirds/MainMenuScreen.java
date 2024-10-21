@@ -1,22 +1,24 @@
 package com.angrybirds;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
-
-import javax.swing.event.ChangeListener;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -28,8 +30,13 @@ public class MainMenuScreen implements Screen {
 
     private Skin skin;
     private Image splashImg;
-    private TextButton buttonPlay , buttonExit;
+    private ImageButton buttonPlay;
+    private ImageButton buttonExit;
     private Image splashImg2;
+    private Texture bptex;
+    private Texture bqtex;
+    private Texture bptex2;
+    private Texture bqtex2;
 
 
 
@@ -39,6 +46,11 @@ public class MainMenuScreen implements Screen {
         this.app = app;
         stage = new Stage(new StretchViewport(angryBirds.V_WIDTH,angryBirds.V_HEIGHT, app.camera));
         this.shapeRenderer = new ShapeRenderer();
+
+        bptex = new Texture("button_play.png");
+        bqtex = new Texture("button_quit.png");
+        bqtex2  = new Texture("button_quit2.png");
+        bptex2 = new Texture("button_play2.png");
 
     }
 
@@ -76,29 +88,81 @@ public class MainMenuScreen implements Screen {
     }
 
     private void initButtons() {
-            buttonPlay = new TextButton("Play", skin, "default");
-            buttonPlay.setPosition(810 , 350);
-            buttonPlay.setSize(280 , 60);
+        TextureRegionDrawable buttonUp = new TextureRegionDrawable(new TextureRegion(bptex));
+        TextureRegionDrawable buttonDown = new TextureRegionDrawable(new TextureRegion(bptex2));
+        TextureRegionDrawable buttonOver = new TextureRegionDrawable(new TextureRegion(bptex2));
+
+        ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
+        buttonStyle.up = buttonUp;      // Default button texture
+        buttonStyle.down = buttonDown;  // Texture when button is pressed
+        buttonStyle.over = buttonOver;  // Texture when button is hovered
+
+        buttonPlay = new ImageButton(buttonStyle);
+        buttonPlay.setPosition(850 , 350);
+            buttonPlay.setSize(200 , 75);
 
             buttonPlay.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
             buttonPlay.addListener(new ClickListener() {
                 @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    // Move slightly down and left when hovered
+                    if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+                        buttonPlay.addAction(Actions.moveBy(+5, -5, 0.1f));
+                    }
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    // Move back to the original position when the mouse leaves
+                    if (pointer == -1) {  // Ensure it's only triggered by hover exit
+                        buttonPlay.addAction(Actions.moveBy(-5, 5, 0.1f));
+                    }
+                }
+                @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    app.setScreen(app.lvl_1);
+                    app.setScreen(app.lvl_3);
                 }
             });
 
 
-            buttonExit = new TextButton("Exit", skin, "default");
-            buttonExit.setPosition(810 , 270);
-            buttonExit.setSize(280 , 60);
+        TextureRegionDrawable buttonUp1 = new TextureRegionDrawable(new TextureRegion(bqtex));
+        TextureRegionDrawable buttonDown1 = new TextureRegionDrawable(new TextureRegion(bqtex2));
+        TextureRegionDrawable buttonOver1 = new TextureRegionDrawable(new TextureRegion(bqtex2));
+
+        buttonStyle = new ImageButton.ImageButtonStyle();
+        buttonStyle.up = buttonUp1;      // Default button texture
+        buttonStyle.down = buttonDown1;  // Texture when button is pressed
+        buttonStyle.over = buttonOver1;
+
+
+        buttonExit = new ImageButton(buttonStyle);
+            buttonExit.setPosition(850 , 220);
+            buttonExit.setSize(200 , 75);
             buttonExit.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
             buttonExit.addListener(new ClickListener() {
                 @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    // Move slightly down and left when hovered
+                    if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+                        buttonExit.addAction(Actions.moveBy(+5, -5, 0.1f));
+                    }
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    // Move back to the original position when the mouse leaves
+                    if (pointer == -1) {  // Ensure it's only triggered by hover exit
+                        buttonExit.addAction(Actions.moveBy(-5, 5, 0.1f));
+                    }
+                }
+                @Override
                 public void clicked(InputEvent event, float x, float y) {
+
                     Gdx.app.exit();
                 }
             });
+
+
             stage.addActor(buttonPlay);
             stage.addActor(buttonExit);
     }

@@ -21,7 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static utils.Constants.PPM;
 
-public class Lvl_1 implements Screen {
+public class Lvl_3 implements Screen {
 
     private final angryBirds app;
     private Stage stage;
@@ -34,7 +34,7 @@ public class Lvl_1 implements Screen {
 
     private boolean isPaused = false;
 
-    public Lvl_1(final angryBirds app) {
+    public Lvl_3(final angryBirds app) {
         this.app = app;
         this.stage = new Stage(new StretchViewport(angryBirds.V_WIDTH, angryBirds.V_HEIGHT, app.camera));
         Gdx.input.setInputProcessor(stage);
@@ -50,7 +50,7 @@ public class Lvl_1 implements Screen {
 
     @Override
     public void show() {
-        map = new TmxMapLoader().load("map/level1.tmx");
+        map = new TmxMapLoader().load("map/nigga.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
 
         stage.clear();
@@ -86,7 +86,7 @@ public class Lvl_1 implements Screen {
 
         Image background = new Image(new TextureRegionDrawable(blackTexture));
         Image mmb = new Image(new TextureRegionDrawable(whiteTexture));
-         // A black texture
+        // A black texture
         mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
 
         background.setSize(angryBirds.V_WIDTH, angryBirds.V_HEIGHT);
