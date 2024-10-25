@@ -123,7 +123,7 @@ public class Lvl_2 implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.mainMenuScreen);
+                app.setScreen(app.lvl_2);
                 mmb.clearActions(); // Clear any previous actions before applying new ones
                 mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));// Exit the application
             }
@@ -137,7 +137,7 @@ public class Lvl_2 implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.mainMenuScreen);  // Exit the application
+                app.setScreen(app.levelsScreen);  // Exit the application
             }
         });
 

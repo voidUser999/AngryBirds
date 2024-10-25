@@ -30,10 +30,19 @@ public class LoadingScreen implements Screen {
         app.assets.load("cat.png", Texture.class);
         app.assets.load("pause.png", Texture.class);
         app.assets.load("ab_name.png", Texture.class);
+        app.assets.load("levels.png", Texture.class);
+        app.assets.load("levels2.png", Texture.class);
+        app.assets.load("1.png", Texture.class);
+        app.assets.load("2.png", Texture.class);
+        app.assets.load("3.png", Texture.class);
+        app.assets.load("1d.png", Texture.class);
+        app.assets.load("2d.png", Texture.class);
+        app.assets.load("3d.png", Texture.class);
         app.assets.load("button_play.png", Texture.class);
         app.assets.load("button_quit.png", Texture.class);
         app.assets.load("cursor1.png", Texture.class);
         app.assets.load("cursor2.png", Texture.class);
+        app.assets.load("levels.png", Texture.class);
 
     }
 

@@ -4,12 +4,9 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -35,6 +32,7 @@ public class angryBirds extends Game {
     public SplashScreen splashScreen;
     public MainMenuScreen mainMenuScreen;
     public PlayScreen playScreen;
+    public LevelsScreen levelsScreen;
     public Level_1 level_1;
     public Lvl_1 lvl_1;
     public Lvl_2 lvl_2;
@@ -44,6 +42,8 @@ public class angryBirds extends Game {
 //    private Body body;
     public Pixmap defaultCursor;
     public Pixmap clickedCursor;
+
+    public Cursor currentCursor;
 
 
     @Override
@@ -66,6 +66,7 @@ public class angryBirds extends Game {
         splashScreen = new SplashScreen(this);
         mainMenuScreen = new MainMenuScreen(this);
         playScreen = new PlayScreen(this);
+        levelsScreen = new LevelsScreen(this);
         level_1 = new Level_1(this);
         lvl_1 = new Lvl_1(this);
         lvl_2 = new Lvl_2(this);
@@ -75,13 +76,20 @@ public class angryBirds extends Game {
 
     @Override
     public void render() {
-        super.render();  // Render the active screen (e.g., SplashScreen)
+        super.render();
 
-        // Check if the left mouse button is pressed
+        Cursor newCursor;
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            Gdx.graphics.setCursor(Gdx.graphics.newCursor(clickedCursor, 0, 0));
+            newCursor = Gdx.graphics.newCursor(clickedCursor, 0, 0);
         } else {
-            Gdx.graphics.setCursor(Gdx.graphics.newCursor(defaultCursor, 0, 0));
+            newCursor = Gdx.graphics.newCursor(defaultCursor, 0, 0);
+        }
+
+        // Check if the cursor needs to be updated
+        if (currentCursor != newCursor) {
+            if (currentCursor != null) currentCursor.dispose(); // Dispose of the old cursor
+            Gdx.graphics.setCursor(newCursor); // Set the new cursor
+            currentCursor = newCursor; // Update the reference
         }
     }
 
@@ -104,12 +112,13 @@ public class angryBirds extends Game {
 
         lvl_2.dispose();
         lvl_3.dispose();
+
+        levelsScreen.dispose();
     }
     private void initCursors() {
         defaultCursor = new Pixmap(Gdx.files.internal("cursor1.png"));
         clickedCursor = new Pixmap(Gdx.files.internal("cursor2.png"));
 
-        // Set the default cursor initially
         Gdx.graphics.setCursor(Gdx.graphics.newCursor(defaultCursor, 0, 0));
     }
 
