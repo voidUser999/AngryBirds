@@ -32,10 +32,11 @@ public class Lvl_1 implements Screen {
     private TiledMap map;
     private Texture tex, resumeTex, exitTex , savexTex ;
     private ImageButton back;
-    private Texture endTex;
+    private Texture endTex , end2Tex;
     private Image endImage;
     private boolean isPaused = false;
     private boolean isEndScreen = false;
+    private int bb ;
 
     public Lvl_1(final angryBirds app) {
         this.app = app;
@@ -46,7 +47,8 @@ public class Lvl_1 implements Screen {
         resumeTex = new Texture("resume.png");
         exitTex = new Texture("splash.png");
         savexTex = new Texture("splash.png");
-        endTex = new Texture("endScreen.png"); // Load end screen texture
+        endTex = new Texture("endScreen.png");
+        end2Tex = new Texture("lose.png");// Load end screen texture
 
         initButtons();
         initPauseMenu();
@@ -79,8 +81,9 @@ public class Lvl_1 implements Screen {
 
     private void initButtons() {
         back = new ImageButton(new TextureRegionDrawable(tex));
-        back.setPosition(20, 900);
-        back.setSize(200, 200);
+        back.setPosition(20, 970);
+        back.setSize(120, 120);
+
 
         back.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
         stage.addActor(back);
@@ -174,7 +177,12 @@ public class Lvl_1 implements Screen {
         background.setColor(1, 1, 1, 0.3f);
 
         // Centered end image
-        endImage = new Image(new TextureRegionDrawable(endTex));
+        if (bb == 0){
+            endImage = new Image(new TextureRegionDrawable(endTex));
+        } else if (bb == 1) {
+            endImage = new Image(new TextureRegionDrawable(end2Tex));
+
+        }
         endImage.setPosition((float) angryBirds.V_WIDTH / 2 - endTex.getWidth() / 2, (float) angryBirds.V_HEIGHT / 2 - endTex.getHeight() / 2);
         endImage.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
 
@@ -203,8 +211,15 @@ public class Lvl_1 implements Screen {
         // Input handling
         if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
             isEndScreen = true;
+            bb =0;
 
         }
+        else if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            isEndScreen = true;
+            bb =1;
+
+        }
+
 
         if (isEndScreen) {
             Gdx.input.setInputProcessor(endStage);
