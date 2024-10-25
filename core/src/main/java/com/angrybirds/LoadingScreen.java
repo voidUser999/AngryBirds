@@ -23,8 +23,27 @@ public class LoadingScreen implements Screen {
     }
 
     private void queueAssets() {
+        app.assets.load("rovio.png", Texture.class);
         app.assets.load("splash.png", Texture.class);
         app.assets.load("skin/uiskin.atlas", TextureAtlas.class);
+        app.assets.load("abc.png", Texture.class);
+        app.assets.load("cat.png", Texture.class);
+        app.assets.load("pause.png", Texture.class);
+        app.assets.load("ab_name.png", Texture.class);
+        app.assets.load("levels.png", Texture.class);
+        app.assets.load("levels2.png", Texture.class);
+        app.assets.load("1.png", Texture.class);
+        app.assets.load("2.png", Texture.class);
+        app.assets.load("3.png", Texture.class);
+        app.assets.load("1d.png", Texture.class);
+        app.assets.load("2d.png", Texture.class);
+        app.assets.load("3d.png", Texture.class);
+        app.assets.load("button_play.png", Texture.class);
+        app.assets.load("button_quit.png", Texture.class);
+        app.assets.load("cursor1.png", Texture.class);
+        app.assets.load("cursor2.png", Texture.class);
+        app.assets.load("levels.png", Texture.class);
+
     }
 
     @Override
@@ -47,7 +66,7 @@ public class LoadingScreen implements Screen {
     }
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(11f, 1f, 1f, 1f);
+        Gdx.gl.glClearColor(1f, 1f, 1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         update(delta);
@@ -88,5 +107,6 @@ public class LoadingScreen implements Screen {
     @Override
     public void dispose() {
         shapeRenderer.dispose();
+
     }
 }
