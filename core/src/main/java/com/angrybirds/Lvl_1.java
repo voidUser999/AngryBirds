@@ -48,33 +48,33 @@ public class Lvl_1 implements Screen {
         exitTex = new Texture("splash.png");
         savexTex = new Texture("splash.png");
         endTex = new Texture("endScreen.png");
-        end2Tex = new Texture("lose.png");// Load end screen texture
+        end2Tex = new Texture("lose.png");
 
         initButtons();
         initPauseMenu();
-        initEndStage(); // Initialize the end stage
+        initEndStage();
     }
     @Override
     public void show() {
-        // Load the map and renderer
+
         map = new TmxMapLoader().load("map/level1.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
 
-        // Clear previous actors and reset stages
+
         stage.clear();
         pauseStage.clear();
         endStage.clear();
 
-        // Reinitialize buttons, pause menu, and end stage
+
         initButtons();
         initPauseMenu();
         initEndStage();
 
-        // Reset flags
+
         isEndScreen = false;
         isPaused = false;
 
-        // Set input processor to the main stage
+
         Gdx.input.setInputProcessor(stage);
     }
 
@@ -126,15 +126,15 @@ public class Lvl_1 implements Screen {
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isPaused = false;  // Resume the game
+                isPaused = false;
 
                 Gdx.input.setInputProcessor(stage);
-                mmb.clearActions(); // Clear any previous actions before applying new ones
-                mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));// Switch back to the game stage
+                mmb.clearActions();
+                mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
             }
         });
 
-        // Exit button
+
         ImageButton exitButton = new ImageButton(new TextureRegionDrawable(exitTex));
         exitButton.setPosition((float) angryBirds.V_WIDTH / 2 +80, (float) angryBirds.V_HEIGHT / 2 - 20);
         exitButton.setSize(200, 300);
@@ -144,8 +144,8 @@ public class Lvl_1 implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
                 app.setScreen(app.lvl_1);
-                mmb.clearActions(); // Clear any previous actions before applying new ones
-                mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));// Exit the application
+                mmb.clearActions();
+                mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
             }
         });
 
@@ -157,11 +157,11 @@ public class Lvl_1 implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.levelsScreen);  // Exit the application
+                app.setScreen(app.levelsScreen);
             }
         });
 
-        // Add buttons to pauseStage
+
         pauseStage.addActor(resumeButton);
         pauseStage.addActor(exitButton);
         pauseStage.addActor(sav_exitButton);
@@ -176,7 +176,7 @@ public class Lvl_1 implements Screen {
         background.setSize(angryBirds.V_WIDTH, angryBirds.V_HEIGHT);
         background.setColor(1, 1, 1, 0.3f);
 
-        // Centered end image
+
         if (bb == 0){
             endImage = new Image(new TextureRegionDrawable(endTex));
         } else if (bb == 1) {
@@ -194,7 +194,7 @@ public class Lvl_1 implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.levelsScreen);  // Exit the application
+                app.setScreen(app.levelsScreen);
             }
         });
 

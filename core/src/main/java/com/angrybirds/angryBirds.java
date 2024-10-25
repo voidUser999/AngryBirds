@@ -71,7 +71,7 @@ public class angryBirds extends Game {
         lvl_1 = new Lvl_1(this);
         lvl_2 = new Lvl_2(this);
         lvl_3 = new Lvl_3(this);
-        this.setScreen(loadingScreen); // Sets SplashScreen
+        this.setScreen(loadingScreen);
     }
 
     @Override
@@ -85,11 +85,11 @@ public class angryBirds extends Game {
             newCursor = Gdx.graphics.newCursor(defaultCursor, 0, 0);
         }
 
-        // Check if the cursor needs to be updated
+
         if (currentCursor != newCursor) {
-            if (currentCursor != null) currentCursor.dispose(); // Dispose of the old cursor
-            Gdx.graphics.setCursor(newCursor); // Set the new cursor
-            currentCursor = newCursor; // Update the reference
+            if (currentCursor != null) currentCursor.dispose();
+            Gdx.graphics.setCursor(newCursor);
+            currentCursor = newCursor;
         }
     }
 

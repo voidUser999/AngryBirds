@@ -105,9 +105,9 @@ public class LevelsScreen implements Screen {
         TextureRegionDrawable buttonOver = new TextureRegionDrawable(new TextureRegion(bptex2));
 
         ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
-        buttonStyle.up = buttonUp;      // Default button texture
-        buttonStyle.down = buttonDown;  // Texture when button is pressed
-        buttonStyle.over = buttonOver;  // Texture when button is hovered
+        buttonStyle.up = buttonUp;
+        buttonStyle.down = buttonDown;
+        buttonStyle.over = buttonOver;
 
         button1 = new ImageButton(buttonStyle);
         button1.setPosition(760 , 451);
@@ -117,16 +117,16 @@ public class LevelsScreen implements Screen {
         button1.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+
+                if (pointer == -1) {
                     button1.addAction(Actions.moveBy(+5, -5, 0.1f));
                 }
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
+
+                if (pointer == -1) {
                     button1.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
             }
@@ -142,8 +142,8 @@ public class LevelsScreen implements Screen {
         TextureRegionDrawable buttonOver1 = new TextureRegionDrawable(new TextureRegion(bqtex2));
 
         buttonStyle = new ImageButton.ImageButtonStyle();
-        buttonStyle.up = buttonUp1;      // Default button texture
-        buttonStyle.down = buttonDown1;  // Texture when button is pressed
+        buttonStyle.up = buttonUp1;
+        buttonStyle.down = buttonDown1;
         buttonStyle.over = buttonOver1;
 
 
@@ -154,16 +154,16 @@ public class LevelsScreen implements Screen {
         button2.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+
+                if (pointer == -1) {
                     button2.addAction(Actions.moveBy(+5, -5, 0.1f));
                 }
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
+
+                if (pointer == -1) {
                     button2.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
             }
@@ -181,8 +181,8 @@ public class LevelsScreen implements Screen {
         TextureRegionDrawable buttonOver2 = new TextureRegionDrawable(new TextureRegion(brtex2));
 
         buttonStyle = new ImageButton.ImageButtonStyle();
-        buttonStyle.up = buttonUp2;      // Default button texture
-        buttonStyle.down = buttonDown2;  // Texture when button is pressed
+        buttonStyle.up = buttonUp2;
+        buttonStyle.down = buttonDown2;
         buttonStyle.over = buttonOver2;
 
 
@@ -193,16 +193,16 @@ public class LevelsScreen implements Screen {
         button3.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+
+                if (pointer == -1) {
                     button3.addAction(Actions.moveBy(+5, -5, 0.1f));
                 }
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
+
+                if (pointer == -1) {
                     button3.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
             }
@@ -218,8 +218,8 @@ public class LevelsScreen implements Screen {
         TextureRegionDrawable buttonOver3 = new TextureRegionDrawable(new TextureRegion(b2));
 
         buttonStyle = new ImageButton.ImageButtonStyle();
-        buttonStyle.up = buttonUp3;      // Default button texture
-        buttonStyle.down = buttonDown3;  // Texture when button is pressed
+        buttonStyle.up = buttonUp3;
+        buttonStyle.down = buttonDown3;
         buttonStyle.over = buttonOver3;
 
 
@@ -230,16 +230,16 @@ public class LevelsScreen implements Screen {
         button4.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+
+                if (pointer == -1) {
                     button4.addAction(Actions.moveBy(+5, -5, 0.1f));
                 }
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
+
+                if (pointer == -1) {
                     button4.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
             }
