@@ -1,33 +1,37 @@
-# prototype_1
+# Angry Birds
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+An Angry Birds-inspired game developed using LibGDX, generated with the gdx-liftoff tool. This project includes application launchers and configurations for desktop deployment using LWJGL3.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Prerequisites
+Java Development Kit (JDK) 8 or higher Download JDK
 
-## Platforms
+Gradle (optional, a Gradle wrapper is included) Install Gradle
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+## Setup Instructions
+### Clone the Repository:
 
-## Gradle
+```bash
+git clone https://github.com/voidUser999/Prototype.git
+cd Prototype
+```
+### Import the Project:
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+Open in an IDE that supports Gradle (e.g., IntelliJ IDEA or Eclipse).
+Import as a Gradle project to resolve dependencies automatically.
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+### Build the Project:
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+```bash
+./gradlew build
+```
+### Run the Game:
+Desktop (LWJGL3)
+```bash
+./gradlew lwjgl3:run
+```
+## Project Structure
+
+core: Contains shared application logic and game assets.
+
+lwjgl3: Configures and launches the desktop version using LWJGL3.
+
