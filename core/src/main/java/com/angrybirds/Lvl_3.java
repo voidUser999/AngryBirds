@@ -57,7 +57,7 @@ public class Lvl_3 implements Screen {
     @Override
     public void show() {
 
-        map = new TmxMapLoader().load("map/level3.tmx");
+        map = new TmxMapLoader().load("map/nigga.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
 
 
