@@ -52,7 +52,7 @@ public class Level_1 implements Screen{
 
         world = new World(new Vector2(0, -9.8f), false);
 
-        player = createBox(100 , 100 , 220 , 220 , false);
+        player = createBox(100 , 100 , 110 , 110 , false);
         platform = createBox(100,80,540, 220 , true);
 
         map = new TmxMapLoader().load("map/level1.tmx");
@@ -69,14 +69,15 @@ public class Level_1 implements Screen{
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         update(delta);
-        app.batch.begin();
-        app.batch.draw(tex , player.getPosition().x * PPM  -110 , player.getPosition().y * PPM -110, 220, 220);
 
-
-        app.batch.end();
 
        tmr.render();
         b2dr.render(world, app.camera.combined.scl(PPM));
+        app.batch.begin();
+        app.batch.draw(tex , player.getPosition().x * PPM  -60 , player.getPosition().y * PPM -60, 110, 110);
+
+
+        app.batch.end();
 
 
 
@@ -85,30 +86,50 @@ public class Level_1 implements Screen{
         stage.act(delta);
         world.step(1/60f , 6 , 2);
         inputUpdate(delta);
+        //camera moves with player
+
         cameraUpdate(delta);
         tmr.setView(app.camera);
         app.batch.setProjectionMatrix(app.camera.combined);
     }
-    public void inputUpdate(float delta){
-        int horizontalForce = 0;
+    boolean launched = false;
+    float launchSpeed = 24;       // Adjust as needed
+    float launchAngle = 60;        // Launch angle in degrees
+    float gravity = -6.8f;         // Gravity constant
 
-        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            horizontalForce-=1;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            horizontalForce+=1;
-        }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)){
-            player.applyForceToCenter(0 , 20000 , false);
+    public void inputUpdate(float delta) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !launched) {
+            launched = true;
+
+            // Convert angle to radians for trigonometric calculations
+            float angleInRadians = (float) Math.toRadians(launchAngle);
+
+            // Calculate initial velocity components
+            float initialVelocityX = launchSpeed * (float) Math.cos(angleInRadians);
+            float initialVelocityY = launchSpeed * (float) Math.sin(angleInRadians);
+
+            // Apply the initial launch velocity
+            player.setLinearVelocity(initialVelocityX, initialVelocityY);
         }
 
-        player.setLinearVelocity((horizontalForce * 5), player.getLinearVelocity().y);
+        // Apply gravity to affect vertical velocity over time if launched
+        if (launched) {
+            // Get the current velocity
+            float currentVelocityX = player.getLinearVelocity().x;
+            float currentVelocityY = player.getLinearVelocity().y;
+
+            // Update the vertical velocity to simulate gravity
+            player.setLinearVelocity(currentVelocityX, currentVelocityY + gravity * delta);
+        }
     }
+
     private void cameraUpdate(float delta) {
         Vector3 position = app.camera.position;
-        position.x = player.getPosition().x * PPM;
-        position.y = player.getPosition().y * PPM;
+//        position.x = player.getPosition().x * PPM;
+//        position.y = player.getPosition().y * PPM;
 
+        position.x = 960;
+        position.y = 540;
         app.camera.position.set(position.x, position.y, 0);
 
         app.camera.update();
@@ -150,6 +171,7 @@ public class Level_1 implements Screen{
         def.type = BodyDef.BodyType.DynamicBody;
         def.position.set(600, 600);
         def.fixedRotation = false;
+
         pBody = world.createBody(def);
 
         PolygonShape shape = new PolygonShape();
@@ -180,5 +202,6 @@ public class Level_1 implements Screen{
         return pBody;
     }
 
+    //getting the ppm value * it if setting the ppm value divide it
 
 }
