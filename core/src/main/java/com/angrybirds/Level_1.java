@@ -50,16 +50,20 @@ public class Level_1 implements Screen{
 
 
 
-        world = new World(new Vector2(0, -9.8f), false);
+        world = new World(new Vector2(0, -9.6f), false);
 
         player = createBox(100 , 100 , 110 , 110 , false);
-        platform = createBox(100,80,540, 220 , true);
+        platform = createBox(100,40,30000, 50 , true);
 
         map = new TmxMapLoader().load("map/level1.tmx");
         tmr = new OrthogonalTiledMapRenderer(map);
+//        TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 2").getObjects() , true);
+      // TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 1").getObjects() , false);
+        // Initialize the world in TiledObjectUtil
+        TiledObjectUtil.initialize(world);
 
-       TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 1").getObjects());
-
+// Now call parseTiledObjectLayer with the updated parameters
+        TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
 
         stage.clear();
     }
@@ -71,7 +75,7 @@ public class Level_1 implements Screen{
         update(delta);
 
 
-       tmr.render();
+      // tmr.render();
         b2dr.render(world, app.camera.combined.scl(PPM));
         app.batch.begin();
         app.batch.draw(tex , player.getPosition().x * PPM  -60 , player.getPosition().y * PPM -60, 110, 110);
@@ -125,11 +129,11 @@ public class Level_1 implements Screen{
 
     private void cameraUpdate(float delta) {
         Vector3 position = app.camera.position;
-//        position.x = player.getPosition().x * PPM;
-//        position.y = player.getPosition().y * PPM;
+//        position.x =app.camera.position.x + ( player.getPosition().x * PPM - app.camera.position.x) * .1f;
+//        position.y = app.camera.position.y + ( player.getPosition().y * PPM - app.camera.position.y) * .1f;
 
         position.x = 960;
-        position.y = 540;
+        position.y = 40;
         app.camera.position.set(position.x, position.y, 0);
 
         app.camera.update();

@@ -3,43 +3,61 @@ package utils;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Timer;
 
 public class TiledObjectUtil {
-    public static void parseTiledObjectLayer(World world, MapObjects objects){
-        for (MapObject object : objects){
-            Shape shape;
-            if(object instanceof PolygonMapObject) {
-                shape = createPolyLine((PolygonMapObject) object);
 
+    private static World world;
+
+    public static void initialize(World worldInstance) {
+        world = worldInstance;
+    }
+
+    public static void parseTiledObjectLayer(MapObjects objects, boolean isStatic) {
+        for (MapObject object : objects) {
+            if (!(object instanceof PolygonMapObject)) continue;
+
+            PolygonMapObject polyObj = (PolygonMapObject) object;
+
+            // Extract vertices directly from the polygon object
+            float[] vertices = polyObj.getPolygon().getTransformedVertices();
+
+            // Convert vertices to Box2D's coordinate system (scaled by PPM)
+            for (int i = 0; i < vertices.length; i++) {
+                vertices[i] /= Constants.PPM;
             }
 
-            else{
-                continue;
-            }
-            Body body;
-            BodyDef bDef = new BodyDef();
-            bDef.type = BodyDef.BodyType.StaticBody;
-            body = world.createBody(bDef);
-            body.createFixture(shape , 1f);
-            shape.dispose();
+            // Create a polygon shape in Box2D using the vertices
+            Body body = createPolygon(vertices, isStatic);
 
-
-
+            // Log the body creation for debugging
+            System.out.println("Created polygon at (" + polyObj.getPolygon().getX() + ", "
+                + polyObj.getPolygon().getY() + ")");
         }
     }
 
-    private static ChainShape createPolyLine(PolygonMapObject polyline){
-            float[] vertices = polyline.getPolygon().getTransformedVertices();
-            Vector2[] worldVertices = new Vector2[vertices.length / 2];
+    public static Body createPolygon(float[] vertices, boolean isStatic) {
+        BodyDef def = new BodyDef();
+        def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
+        def.fixedRotation = true; // Start with fixed rotation
 
-            for(int i = 0; i < worldVertices.length; i++){
-                worldVertices[i] = new Vector2(vertices[i * 2] /Constants.PPM, vertices[i * 2 + 1] / Constants.PPM);
+        Body pBody = world.createBody(def);
+
+        PolygonShape shape = new PolygonShape();
+        shape.set(vertices); // Set vertices to create a custom polygon shape
+
+        pBody.createFixture(shape, 1.0f);
+        shape.dispose();
+
+        // Schedule enabling rotation after 2 seconds
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                pBody.setFixedRotation(false); // Enable rotation
             }
-            ChainShape cs = new ChainShape();
-            cs.createChain(worldVertices);
-            return cs;
+        }, 2); // 2-second delay
 
+        return pBody;
     }
 }
