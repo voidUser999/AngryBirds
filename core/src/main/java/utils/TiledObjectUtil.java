@@ -2,6 +2,7 @@ package utils;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
@@ -115,17 +116,29 @@ public class TiledObjectUtil {
         Object userData = body.getUserData();
         if (userData instanceof Texture) {
             Texture texture = (Texture) userData;
-
-            // Get body position in pixel coordinates
+            TextureRegion textureRegion = new TextureRegion(texture);
+            // Get body position and angle
             Vector2 position = body.getPosition();
+            float angle = (float) Math.toDegrees(body.getAngle()); // Convert radians to degrees for Batch
+
+            // Convert position to pixel coordinates
             float x = (position.x * PPM) - (texture.getWidth() / 2f);
             float y = (position.y * PPM) - (texture.getHeight() / 2f);
 
-            System.out.println("Drawing texture at: " + x + ", " + y);
+            System.out.println("Drawing texture at: " + x + ", " + y + " with rotation: " + angle);
 
-            batch.draw(texture, x, y);
+            // Draw the texture with rotation
+            batch.draw(
+                textureRegion,
+                x, y,                                 // Bottom-left corner of the texture
+                textureRegion.getRegionWidth() / 2f, texture.getHeight() / 2f, // Origin for rotation
+                textureRegion.getRegionWidth(), textureRegion.getRegionHeight(), // Width and height of the texture
+                1f, 1f,                               // Scale
+                angle                                 // Rotation angle
+            );
         }
     }
+
 
     public static void renderAllBodies(Batch batch) {
         for (Body body : bodyTextures.keySet()) {
