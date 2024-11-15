@@ -81,7 +81,7 @@ public class Level_1 implements Screen{
         update(delta);
 
 
-        //tmr.render();
+        tmr.render();
         b2dr.render(world, app.camera.combined.scl(PPM));
         app.batch.begin();
         app.batch.draw(tex , player.getPosition().x * PPM  -60 , player.getPosition().y * PPM -60, 110, 110);
@@ -144,7 +144,7 @@ public class Level_1 implements Screen{
 //        position.y = app.camera.position.y + ( player.getPosition().y * PPM - app.camera.position.y) * .1f;
 
         position.x = 960;
-        position.y = 40;
+        position.y = 540;
         app.camera.position.set(position.x, position.y, 0);
 
         app.camera.update();
