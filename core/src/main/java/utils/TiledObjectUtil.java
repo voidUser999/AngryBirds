@@ -5,11 +5,15 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import static utils.Constants.PPM;
 
 public class TiledObjectUtil {
 
@@ -17,107 +21,112 @@ public class TiledObjectUtil {
     private static final Map<Body, String> bodyTextures = new HashMap<>();
     private static final Map<String, Texture> textureCache = new HashMap<>();
 
-    /**
-     * Initializes the TiledObjectUtil with the Box2D world instance.
-     */
     public static void initialize(World worldInstance) {
         world = worldInstance;
+        System.out.println("TiledObjectUtil initialized with world: " + worldInstance);
     }
 
-    /**
-     * Parses Tiled map objects, creates Box2D bodies, and associates textures.
-     */
     public static void parseTiledObjectLayer(MapObjects objects, boolean isStatic) {
         for (MapObject object : objects) {
             if (!(object instanceof PolygonMapObject)) continue;
 
             PolygonMapObject polyObj = (PolygonMapObject) object;
-
-            // Extract vertices directly from the polygon object
             float[] vertices = polyObj.getPolygon().getTransformedVertices();
 
-            // Convert vertices to Box2D's coordinate system (scaled by PPM)
+            // Scale vertices for Box2D (convert from pixels to meters)
             for (int i = 0; i < vertices.length; i++) {
-                vertices[i] = vertices[i] / 32;
+                vertices[i] = vertices[i] / PPM;
             }
 
-            // Create a polygon shape in Box2D using the vertices
-            Body body = createPolygon(vertices, isStatic);
+            // Calculate centroid of the polygon for accurate body placement
+            Vector2 centroid = calculateCentroid(vertices);
+            System.out.println("Centroid calculated at: " + centroid);
 
-            // Retrieve the texture name from Tiled map properties
+            // Offset vertices relative to the centroid
+            for (int i = 0; i < vertices.length; i += 2) {
+                vertices[i] -= centroid.x;
+                vertices[i + 1] -= centroid.y;
+            }
+
+            // Create Box2D body at the centroid
+            Body body = createPolygon(vertices, centroid, isStatic);
+
+            // Retrieve the texture name and associate it with the body
             String textureName = (String) polyObj.getProperties().get("texture");
             if (textureName != null) {
                 bodyTextures.put(body, textureName);
 
-                // Set texture as userData for the body
                 Texture texture = getTexture(textureName);
                 body.setUserData(texture);
-            }
 
-            // Log the body creation for debugging
-            System.out.println("Created polygon at (" + polyObj.getPolygon().getX() + ", "
-                + polyObj.getPolygon().getY() + ")");
+                System.out.println("Associated texture: " + textureName);
+            }
         }
     }
 
-    /**
-     * Creates a Box2D polygon body and optionally enables rotation after 2 seconds.
-     */
-    public static Body createPolygon(float[] vertices, boolean isStatic) {
+    private static Body createPolygon(float[] vertices, Vector2 position, boolean isStatic) {
         BodyDef def = new BodyDef();
         def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
-        def.fixedRotation = true; // Start with fixed rotation
+        def.fixedRotation = true;
+        def.position.set(position);
 
-        Body pBody = world.createBody(def);
+        Body body = world.createBody(def);
 
-        // Create and set the polygon shape
         PolygonShape shape = new PolygonShape();
-        shape.set(vertices); // Set vertices to create a custom polygon shape
-
-        pBody.createFixture(shape, 1.0f);
+        shape.set(vertices);
+        body.createFixture(shape, 1.0f);
         shape.dispose();
 
-        // Schedule enabling rotation after 2 seconds
+        System.out.println("Body created at: " + body.getPosition());
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                pBody.setFixedRotation(false); // Enable rotation
+                body.setFixedRotation(false); // Enable rotation
+                System.out.println("Rotation enabled for body at: " + body.getPosition().x + ", " + body.getPosition().y);
             }
-        }, 2); // 2-second delay
-
-        return pBody;
+        },2);
+        return body;
     }
 
-    /**
-     * Retrieves or loads a texture from the cache by its name.
-     */
-    public static Texture getTexture(String textureName) {
+    private static Vector2 calculateCentroid(float[] vertices) {
+        Vector2 centroid = new Vector2(0, 0);
+        int vertexCount = vertices.length / 2;
+
+        for (int i = 0; i < vertices.length; i += 2) {
+            centroid.x += vertices[i];
+            centroid.y += vertices[i + 1];
+        }
+
+        centroid.x /= vertexCount;
+        centroid.y /= vertexCount;
+
+        return centroid;
+    }
+
+    private static Texture getTexture(String textureName) {
         if (!textureCache.containsKey(textureName)) {
             textureCache.put(textureName, new Texture(textureName));
+            System.out.println("Loaded new texture: " + textureName);
         }
         return textureCache.get(textureName);
     }
 
-    /**
-     * Renders a Box2D body using its associated texture (from userData).
-     */
     public static void renderBody(Body body, Batch batch) {
         Object userData = body.getUserData();
         if (userData instanceof Texture) {
             Texture texture = (Texture) userData;
 
-            // Get body position for rendering
-            float x = body.getPosition().x * 32; // Convert back to pixel coordinates
-            float y = body.getPosition().y * 32;
+            // Get body position in pixel coordinates
+            Vector2 position = body.getPosition();
+            float x = (position.x * PPM) - (texture.getWidth() / 2f);
+            float y = (position.y * PPM) - (texture.getHeight() / 2f);
 
-            // Draw the texture
-            batch.draw(texture, x+500, y+600);
+            System.out.println("Drawing texture at: " + x + ", " + y);
+
+            batch.draw(texture, x, y);
         }
     }
 
-    /**
-     * Renders all bodies with textures in the world.
-     */
     public static void renderAllBodies(Batch batch) {
         for (Body body : bodyTextures.keySet()) {
             renderBody(body, batch);

@@ -246,12 +246,14 @@
  <objectgroup id="6" name="Object Layer 1">
   <object id="36" x="1421" y="447">
    <properties>
+    <property name="ID" value="1"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
    <polygon points="0,0 79,-1 80,77 2,77"/>
   </object>
   <object id="37" x="1399" y="529">
    <properties>
+    <property name="ID" value="2"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
    <polygon points="0,0 75,0 75,73 0,75"/>
@@ -260,6 +262,9 @@
    <polygon points="0,0 -76,77 3,75"/>
   </object>
   <object id="39" x="1351" y="610">
+   <properties>
+    <property name="texture" value="img_map/mats/long_wood1_1.png"/>
+   </properties>
    <polygon points="0,0 195,-2 196,14 4,13"/>
   </object>
   <object id="40" x="1526" y="631">
