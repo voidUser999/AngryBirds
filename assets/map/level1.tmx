@@ -245,9 +245,15 @@
  </layer>
  <objectgroup id="6" name="Object Layer 1">
   <object id="36" x="1421" y="447">
+   <properties>
+    <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
+   </properties>
    <polygon points="0,0 79,-1 80,77 2,77"/>
   </object>
   <object id="37" x="1399" y="529">
+   <properties>
+    <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
+   </properties>
    <polygon points="0,0 75,0 75,73 0,75"/>
   </object>
   <object id="38" x="1385" y="526">

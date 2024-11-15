@@ -6,7 +6,9 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -19,6 +21,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import utils.TiledObjectUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static utils.Constants.PPM;
@@ -33,8 +38,7 @@ public class Level_1 implements Screen{
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private Texture tex;
-
-
+    private Map<String, Texture> textureMap = new HashMap<>();
 
     public Level_1(final angryBirds app){
 
@@ -43,6 +47,7 @@ public class Level_1 implements Screen{
         Gdx.input.setInputProcessor(stage);
         b2dr = new Box2DDebugRenderer();
         tex = new Texture("cat.png");
+        textureMap.put("sqr_wood1_1", new Texture("img_map/mats/sqr_wood1_1.png"));
 
     }
     @Override
@@ -75,13 +80,41 @@ public class Level_1 implements Screen{
         update(delta);
 
 
-      // tmr.render();
+        //tmr.render();
         b2dr.render(world, app.camera.combined.scl(PPM));
         app.batch.begin();
         app.batch.draw(tex , player.getPosition().x * PPM  -60 , player.getPosition().y * PPM -60, 110, 110);
 
 
+        // Draw each object from the Tiled map using textures from custom properties
+        // Draw each object from the Tiled map using textures from custom properties
+        for (Map.Entry<Body, String> entry : TiledObjectUtil.getBodyTextures().entrySet()) {
+            Body body = entry.getKey();
+            String textureName = entry.getValue();
+            Texture texture = TiledObjectUtil.getTexture(textureName);
+
+
+
+
+            // Adjust position to center the texture on the body
+            float x =body.getPosition().x   + 400;
+            float y = body.getPosition().y  + 400 ;
+
+
+
+            app.batch.draw(
+                texture,               // The TextureRegion to draw
+                x,                           // Adjusted x position
+                y,                           // Adjusted y position
+                  // Origin X for rotation
+                 // Origin Y for rotation
+                texture.getWidth(),       // Width
+                texture.getHeight()
+            );
+        }
+
         app.batch.end();
+
 
 
 
