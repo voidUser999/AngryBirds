@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -88,30 +89,7 @@ public class Level_1 implements Screen{
 
         // Draw each object from the Tiled map using textures from custom properties
         // Draw each object from the Tiled map using textures from custom properties
-        for (Map.Entry<Body, String> entry : TiledObjectUtil.getBodyTextures().entrySet()) {
-            Body body = entry.getKey();
-            String textureName = entry.getValue();
-            Texture texture = TiledObjectUtil.getTexture(textureName);
-
-
-
-
-            // Adjust position to center the texture on the body
-            float x =body.getPosition().x   + 400;
-            float y = body.getPosition().y  + 400 ;
-
-
-
-            app.batch.draw(
-                texture,               // The TextureRegion to draw
-                x,                           // Adjusted x position
-                y,                           // Adjusted y position
-                  // Origin X for rotation
-                 // Origin Y for rotation
-                texture.getWidth(),       // Width
-                texture.getHeight()
-            );
-        }
+        TiledObjectUtil.renderAllBodies(app.batch);
 
         app.batch.end();
 
