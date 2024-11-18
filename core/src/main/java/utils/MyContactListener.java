@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class MyContactListener implements ContactListener {
     private final Array<Body> bodiesToDestroy = new Array<>();
+    private float playerHealth = 500f; // Initialize player health
 
     @Override
     public void beginContact(Contact contact) {
@@ -14,13 +15,11 @@ public class MyContactListener implements ContactListener {
         if (fa == null || fb == null) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
-        // Bird colliding with wall
+        // Bird (player) colliding with wall (box)
         if ("this".equals(fa.getUserData()) && "userdata".equals(fb.getUserData())) {
-            System.out.println("Bird hit Wall (A -> B)");
-            markForDestruction(fb.getBody());
+            handleCollision(fa.getBody(), fb.getBody());
         } else if ("userdata".equals(fa.getUserData()) && "this".equals(fb.getUserData())) {
-            System.out.println("Bird hit Wall (B -> A)");
-            markForDestruction(fa.getBody());
+            handleCollision(fb.getBody(), fa.getBody());
         }
     }
 
@@ -33,15 +32,31 @@ public class MyContactListener implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse contactImpulse) {}
 
+    private void handleCollision(Body playerBody, Body otherBody) {
+        // Calculate speed of the player at the moment of collision
+        float speed = playerBody.getLinearVelocity().len();
+        float damage = speed * 10; // Example damage calculation (adjust as needed)
+
+        // Apply damage to player health
+        playerHealth -= damage;
+        System.out.println("Player Health: " + playerHealth);
+
+        // If health is below zero, player can no longer destroy objects
+        if (playerHealth <= 0) {
+            System.out.println("Player is too weak to destroy objects!");
+            return;
+        }
+
+        // Mark the other body for destruction
+        markForDestruction(otherBody);
+    }
+
     private void markForDestruction(Body body) {
         if (!bodiesToDestroy.contains(body, true)) {
             bodiesToDestroy.add(body);
-
-            // Mark body as to-be-destroyed but defer deactivation
             body.setUserData("toBeDestroyed");
         }
     }
-
 
     public void processPendingDestructions(World world) {
         for (Body body : bodiesToDestroy) {
@@ -50,5 +65,14 @@ public class MyContactListener implements ContactListener {
             }
         }
         bodiesToDestroy.clear();
+    }
+
+    // Getter and setter for player health if needed elsewhere
+    public float getPlayerHealth() {
+        return playerHealth;
+    }
+
+    public void setPlayerHealth(float health) {
+        this.playerHealth = health;
     }
 }

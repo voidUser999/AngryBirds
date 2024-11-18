@@ -24,6 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import utils.MyContactListener;
@@ -89,7 +90,7 @@ public class Level_1 implements Screen{
             contactListener = new MyContactListener();
             world.setContactListener(contactListener);
             launched = false;
-            player = createBox(100, 100, 110, 110, false , "this" , 0.5f);
+            player = createBox(100, 100, 70, 70, false , "this" , 0.5f);
             platform = createBox(100, 40, 50, 30000, true , "data" , -1f);
 
             if (map != null) {
@@ -281,8 +282,13 @@ public class Level_1 implements Screen{
 
         // Begin sprite batch rendering
         app.batch.begin();
-        app.batch.draw(tex, player.getPosition().x * PPM - 60, player.getPosition().y * PPM - 60, 110, 110);
+        if (!isDestroyed){
+            app.batch.draw(tex, player.getPosition().x * PPM - 65, player.getPosition().y * PPM - 60, 110, 110);
+        }
+        else {
+            System.out.println("Bird tex destroyed");
 
+        }
         // Draw objects from TiledObjectUtil
         TiledObjectUtil.renderAllBodies(app.batch);
         app.batch.end();
@@ -300,7 +306,9 @@ public class Level_1 implements Screen{
             stage.draw();
         }
     }
-
+    private boolean isLowMomentum = false; // To track if bird has low momentum
+    private final float MOMENTUM_THRESHOLD = 0.5f; // Speed threshold
+    private final float MOMENTUM_TIMEOUT = 3f; // 3-second timeout for low momentum
     public void update(float delta){
         stage.act(delta);
         world.step(1/60f , 6 , 2);
@@ -314,12 +322,15 @@ public class Level_1 implements Screen{
             Vector2 velocity = player.getLinearVelocity();
             float speed = velocity.len(); // Total velocity magnitude
 
-            // Threshold for destroying the bird
-            float momentumThreshold = 0.5f;
-
-            if (speed < momentumThreshold) {
-                // Bird has lost all momentum, destroy it
-                destroyBird();
+            if (speed < MOMENTUM_THRESHOLD) {
+                // Bird has low momentum
+                if (!isLowMomentum) {
+                    isLowMomentum = true;
+                    startMomentumTimer(); // Start the timer when speed falls below threshold
+                }
+            } else {
+                // Reset the low momentum state if speed exceeds threshold
+                isLowMomentum = false;
             }
         }
 
@@ -468,6 +479,16 @@ public class Level_1 implements Screen{
         shape.dispose();
 
         return pBody;
+    }
+    private void startMomentumTimer() {
+        // Schedule the destruction of the bird after 3 seconds of low momentum
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+
+                destroyBird(); // Destroy the bird after 3 seconds
+            }
+        }, MOMENTUM_TIMEOUT); // Timeout after 3 seconds
     }
 
     //getting the ppm value * it if setting the ppm value divide it
