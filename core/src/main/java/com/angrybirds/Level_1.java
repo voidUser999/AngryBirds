@@ -26,6 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import utils.MyContactListener;
 import utils.TiledObjectUtil;
 
 import java.util.HashMap;
@@ -35,10 +36,11 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static utils.Constants.PPM;
 
 public class Level_1 implements Screen{
-
+    private static World savedWorld = null;
+    private static boolean worldSaved = false;
+    private World world;
     private final angryBirds app;
     private Stage stage;
-    private World world;
     private Box2DDebugRenderer b2dr;
     private Body player , platform;
     private OrthogonalTiledMapRenderer tmr;
@@ -75,31 +77,32 @@ public class Level_1 implements Screen{
     }
     @Override
     public void show() {
-        if (world != null) {
-            clearWorld();
-            world.dispose();
-        }
+        if (worldSaved && savedWorld != null) {
+            // Reuse the saved world
+            this.world = savedWorld;
+        } else {
 
 
-        world = new World(new Vector2(0, -9.6f), false);
-        launched = false;
-        player = createBox(100 , 100 , 110 , 110 , false);
-        platform = createBox(100,40,30000, 50 , true);
+            world = new World(new Vector2(0, -9.6f), false);
+            world.setContactListener(new MyContactListener());
+            launched = false;
+            player = createBox(100, 100, 110, 110, false , "this");
+            platform = createBox(100, 40, 30000, 50, true , "userdata");
 
-        if (map != null) {
-            map.dispose();
-        }
+            if (map != null) {
+                map.dispose();
+            }
 
-        map = new TmxMapLoader().load("map/level1.tmx");
-        tmr = new OrthogonalTiledMapRenderer(map);
+            map = new TmxMapLoader().load("map/level1.tmx");
+            tmr = new OrthogonalTiledMapRenderer(map);
 //        TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 2").getObjects() , true);
-      // TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 1").getObjects() , false);
-        // Initialize the world in TiledObjectUtil
-        TiledObjectUtil.initialize(world);
+            // TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 1").getObjects() , false);
+            // Initialize the world in TiledObjectUtil
+            TiledObjectUtil.initialize(world);
 
 // Now call parseTiledObjectLayer with the updated parameters
-        TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
-
+            TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
+        }
         stage.clear();
         pauseStage.clear();
         endStage.clear();
@@ -126,6 +129,10 @@ public class Level_1 implements Screen{
         for (Body body : bodies) {
             world.destroyBody(body);
         }
+    }
+    private void saveWorldState() {
+        worldSaved = true;
+        savedWorld = this.world;
     }
 
     private void initButtons() {
@@ -191,7 +198,9 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.lvl_1);
+                clearWorld();
+                app.setScreen(app.level_1);
+
                 mmb.clearActions();
                 mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
             }
@@ -204,11 +213,10 @@ public class Level_1 implements Screen{
         sav_exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isPaused = false;
+                saveWorldState();
                 app.setScreen(app.levelsScreen);
             }
         });
-
 
         pauseStage.addActor(resumeButton);
         pauseStage.addActor(exitButton);
@@ -301,7 +309,7 @@ public class Level_1 implements Screen{
         app.batch.setProjectionMatrix(app.camera.combined);
     }
     boolean launched = false;
-    float launchSpeed = 24;       // Adjust as needed
+    float launchSpeed = 28;       // Adjust as needed
     float launchAngle = 60;        // Launch angle in degrees
     float gravity = -6.8f;         // Gravity constant
 
@@ -366,9 +374,15 @@ public class Level_1 implements Screen{
     @Override
     public void dispose() {
         System.out.println("Disposing ");
+        if (!isPaused) { // Only dispose if not paused
+            clearWorld();
+            world.dispose();
+            worldSaved = false;
+            savedWorld = null;
+        }
         stage.dispose();
         b2dr.dispose();
-        world.dispose();
+
         tmr.dispose();
         map.dispose();
         tex.dispose();
@@ -394,7 +408,8 @@ public class Level_1 implements Screen{
         return pBody;
     }
 
-    public Body createBox(int x , int y , int height, int width , boolean isStatic) {
+    public Body createBox(int x , int y , int height, int width , boolean isStatic , String temp) {
+
         Body pBody;
         BodyDef def = new BodyDef();
         if(isStatic){
@@ -410,7 +425,7 @@ public class Level_1 implements Screen{
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox((float) height / 2 / PPM, (float) width / 2 / PPM);
-        pBody.createFixture(shape, 1.0f);//density
+        pBody.createFixture(shape, 1.0f).setUserData(temp);//density
         shape.dispose();
         return pBody;
     }

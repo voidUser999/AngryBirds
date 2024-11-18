@@ -24,7 +24,7 @@ public class TiledObjectUtil {
 
     public static void initialize(World worldInstance) {
         world = worldInstance;
-        System.out.println("TiledObjectUtil initialized with world: " + worldInstance);
+        //System.out.println("TiledObjectUtil initialized with world: " + worldInstance);
     }
 
     public static void parseTiledObjectLayer(MapObjects objects, boolean isStatic) {
@@ -41,7 +41,7 @@ public class TiledObjectUtil {
 
             // Calculate centroid of the polygon for accurate body placement
             Vector2 centroid = calculateCentroid(vertices);
-            System.out.println("Centroid calculated at: " + centroid);
+           // System.out.println("Centroid calculated at: " + centroid);
 
             // Offset vertices relative to the centroid
             for (int i = 0; i < vertices.length; i += 2) {
@@ -60,7 +60,7 @@ public class TiledObjectUtil {
                 Texture texture = getTexture(textureName);
                 body.setUserData(texture);
 
-                System.out.println("Associated texture: " + textureName);
+               // System.out.println("Associated texture: " + textureName);
             }
         }
     }
@@ -75,15 +75,15 @@ public class TiledObjectUtil {
 
         PolygonShape shape = new PolygonShape();
         shape.set(vertices);
-        body.createFixture(shape, 1.0f);
+        body.createFixture(shape, 1.0f).setUserData("userdata");
         shape.dispose();
 
-        System.out.println("Body created at: " + body.getPosition());
+        //System.out.println("Body created at: " + body.getPosition());
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
                 body.setFixedRotation(false); // Enable rotation
-                System.out.println("Rotation enabled for body at: " + body.getPosition().x + ", " + body.getPosition().y);
+                //System.out.println("Rotation enabled for body at: " + body.getPosition().x + ", " + body.getPosition().y);
             }
         },2);
         return body;
@@ -107,7 +107,7 @@ public class TiledObjectUtil {
     private static Texture getTexture(String textureName) {
         if (!textureCache.containsKey(textureName)) {
             textureCache.put(textureName, new Texture(textureName));
-            System.out.println("Loaded new texture: " + textureName);
+            //System.out.println("Loaded new texture: " + textureName);
         }
         return textureCache.get(textureName);
     }
@@ -125,7 +125,7 @@ public class TiledObjectUtil {
             float x = (position.x * PPM) - (texture.getWidth() / 2f);
             float y = (position.y * PPM) - (texture.getHeight() / 2f);
 
-            System.out.println("Drawing texture at: " + x + ", " + y + " with rotation: " + angle);
+            //System.out.println("Drawing texture at: " + x + ", " + y + " with rotation: " + angle);
 
             // Draw the texture with rotation
             batch.draw(
