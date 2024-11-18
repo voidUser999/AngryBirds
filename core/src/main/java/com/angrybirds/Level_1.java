@@ -57,6 +57,8 @@ public class Level_1 implements Screen{
     private boolean isPaused = false;
     private boolean isEndScreen = false;
     private int bb ;
+    private MyContactListener contactListener;
+    private boolean isDestroyed = false;
     public Level_1(final angryBirds app){
 
         this.app = app;
@@ -84,10 +86,11 @@ public class Level_1 implements Screen{
 
 
             world = new World(new Vector2(0, -9.6f), false);
-            world.setContactListener(new MyContactListener());
+            contactListener = new MyContactListener();
+            world.setContactListener(contactListener);
             launched = false;
-            player = createBox(100, 100, 110, 110, false , "this");
-            platform = createBox(100, 40, 30000, 50, true , "userdata");
+            player = createBox(100, 100, 110, 110, false , "this" , 0.5f);
+            platform = createBox(100, 40, 50, 30000, true , "data" , -1f);
 
             if (map != null) {
                 map.dispose();
@@ -301,6 +304,25 @@ public class Level_1 implements Screen{
     public void update(float delta){
         stage.act(delta);
         world.step(1/60f , 6 , 2);
+        // Process pending body destructions
+        if (contactListener instanceof MyContactListener) {
+            ((MyContactListener) contactListener).processPendingDestructions(world);
+        }
+
+        // Check if the bird has lost momentum
+        if (launched && player != null) { // Ensure the bird is launched
+            Vector2 velocity = player.getLinearVelocity();
+            float speed = velocity.len(); // Total velocity magnitude
+
+            // Threshold for destroying the bird
+            float momentumThreshold = 0.5f;
+
+            if (speed < momentumThreshold) {
+                // Bird has lost all momentum, destroy it
+                destroyBird();
+            }
+        }
+
         inputUpdate(delta);
         //camera moves with player
 
@@ -309,8 +331,8 @@ public class Level_1 implements Screen{
         app.batch.setProjectionMatrix(app.camera.combined);
     }
     boolean launched = false;
-    float launchSpeed = 28;       // Adjust as needed
-    float launchAngle = 60;        // Launch angle in degrees
+    float launchSpeed = 30;       // Adjust as needed
+    float launchAngle = 55;        // Launch angle in degrees
     float gravity = -6.8f;         // Gravity constant
 
     public void inputUpdate(float delta) {
@@ -336,6 +358,13 @@ public class Level_1 implements Screen{
 
             // Update the vertical velocity to simulate gravity
             player.setLinearVelocity(currentVelocityX, currentVelocityY + gravity * delta);
+        }
+    }
+    private void destroyBird() {
+        if (!isDestroyed) {
+            world.destroyBody(player); // Remove from the physics world
+             isDestroyed=true;// Dereference to avoid accidental reuse
+            System.out.println("Bird destroyed due to low momentum.");
         }
     }
 
@@ -408,25 +437,36 @@ public class Level_1 implements Screen{
         return pBody;
     }
 
-    public Body createBox(int x , int y , int height, int width , boolean isStatic , String temp) {
-
+    public Body createBox(int x, int y, int height, int width, boolean isStatic, String temp , float restitute ) {
         Body pBody;
         BodyDef def = new BodyDef();
-        if(isStatic){
-            def.type = BodyDef.BodyType.StaticBody;
-        }
-        else {
-            def.type = BodyDef.BodyType.DynamicBody;
-        }
 
+        // Set body type based on whether it is static or dynamic
+        def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
         def.position.set(x / PPM, y / PPM);
-        def.fixedRotation = true;
+        def.fixedRotation = true; // Prevents the body from rotating
+
+        // Create the body in the world
         pBody = world.createBody(def);
 
+        // Define shape and set it as a box
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox((float) height / 2 / PPM, (float) width / 2 / PPM);
-        pBody.createFixture(shape, 1.0f).setUserData(temp);//density
+        shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
+
+        // Create a fixture definition to apply properties
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1.0f; // Adjust density for mass
+        fixtureDef.friction = 0.5f; // Adjust friction for sliding interactions
+        fixtureDef.restitution = restitute; // Adjust restitution for bounciness
+
+
+        // Attach the fixture to the body and set user data
+        pBody.createFixture(fixtureDef).setUserData(temp);
+
+        // Dispose of the shape to free memory
         shape.dispose();
+
         return pBody;
     }
 

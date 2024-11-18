@@ -67,15 +67,22 @@ public class TiledObjectUtil {
 
     private static Body createPolygon(float[] vertices, Vector2 position, boolean isStatic) {
         BodyDef def = new BodyDef();
-        def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
-        def.fixedRotation = true;
-        def.position.set(position);
+        def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody; // Walls are static
+        def.fixedRotation = true; // Walls don't rotate
+        def.position.set(position); // Set the wall's position
 
         Body body = world.createBody(def);
 
         PolygonShape shape = new PolygonShape();
         shape.set(vertices);
-        body.createFixture(shape, 1.0f).setUserData("userdata");
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1.0f; // Standard density for a wall
+        fixtureDef.friction = 0.5f; // Slight friction for wall interactions
+        fixtureDef.restitution = 0.2f; // Slight bounciness for realism
+
+        body.createFixture(fixtureDef).setUserData("userdata"); // Mark as wall for collision
         shape.dispose();
 
         //System.out.println("Body created at: " + body.getPosition());
