@@ -92,7 +92,7 @@ public class TiledObjectUtil {
                 body.setFixedRotation(false); // Enable rotation
                 //System.out.println("Rotation enabled for body at: " + body.getPosition().x + ", " + body.getPosition().y);
             }
-        },2);
+        },0.5f);
         return body;
     }
 

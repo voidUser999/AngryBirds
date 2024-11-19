@@ -43,12 +43,12 @@ public class Level_1 implements Screen{
     private final angryBirds app;
     private Stage stage;
     private Box2DDebugRenderer b2dr;
-    private Body player , platform;
+    private Body player , platform , player1 , player2 ;
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private Texture tex;
-
-
+    private int turn;
+    Body PP;
     private Stage pauseStage;
     private Stage endStage;
     private Texture  resumeTex, exitTex , savexTex ;
@@ -91,6 +91,8 @@ public class Level_1 implements Screen{
             world.setContactListener(contactListener);
             launched = false;
             player = createBox(100, 100, 70, 70, false , "this" , 0.5f);
+            player1 = createBox(100, 100, 70, 70, false , "this" , 0.5f);
+            player2 = createBox(100, 100, 70, 70, false , "this" , 0.5f);
             platform = createBox(100, 40, 50, 30000, true , "data" , -1f);
 
             if (map != null) {
@@ -282,13 +284,11 @@ public class Level_1 implements Screen{
 
         // Begin sprite batch rendering
         app.batch.begin();
-        if (!isDestroyed){
-            app.batch.draw(tex, player.getPosition().x * PPM - 65, player.getPosition().y * PPM - 60, 110, 110);
-        }
-        else {
-            System.out.println("Bird tex destroyed");
 
-        }
+        app.batch.draw(tex, player.getPosition().x * PPM - 65, player.getPosition().y * PPM - 60, 110, 110);
+        app.batch.draw(tex, player1.getPosition().x * PPM - 65, player1.getPosition().y * PPM - 60, 110, 110);
+        app.batch.draw(tex, player2.getPosition().x * PPM - 65, player2.getPosition().y * PPM - 60, 110, 110);
+
         // Draw objects from TiledObjectUtil
         TiledObjectUtil.renderAllBodies(app.batch);
         app.batch.end();
@@ -308,7 +308,7 @@ public class Level_1 implements Screen{
     }
     private boolean isLowMomentum = false; // To track if bird has low momentum
     private final float MOMENTUM_THRESHOLD = 0.5f; // Speed threshold
-    private final float MOMENTUM_TIMEOUT = 3f; // 3-second timeout for low momentum
+    private final float MOMENTUM_TIMEOUT = 1.5f; // 3-second timeout for low momentum
     public void update(float delta){
         stage.act(delta);
         world.step(1/60f , 6 , 2);
@@ -316,10 +316,18 @@ public class Level_1 implements Screen{
         if (contactListener instanceof MyContactListener) {
             ((MyContactListener) contactListener).processPendingDestructions(world);
         }
-
+        if(turn == 0){
+            PP = player;
+        }
+        else if(turn == 2){
+            PP = player2;
+        }
+        else if(turn == 1){
+            PP = player1;
+        }
         // Check if the bird has lost momentum
-        if (launched && player != null) { // Ensure the bird is launched
-            Vector2 velocity = player.getLinearVelocity();
+        if (launched && PP != null) { // Ensure the bird is launched
+            Vector2 velocity = PP.getLinearVelocity();
             float speed = velocity.len(); // Total velocity magnitude
 
             if (speed < MOMENTUM_THRESHOLD) {
@@ -342,11 +350,20 @@ public class Level_1 implements Screen{
         app.batch.setProjectionMatrix(app.camera.combined);
     }
     boolean launched = false;
-    float launchSpeed = 30;       // Adjust as needed
+    float launchSpeed = 24;       // Adjust as needed
     float launchAngle = 55;        // Launch angle in degrees
     float gravity = -6.8f;         // Gravity constant
 
     public void inputUpdate(float delta) {
+        if(turn == 0){
+            PP = player;
+        }
+        else if(turn == 2){
+            PP = player2;
+        }
+        else if(turn == 1){
+            PP = player1;
+        }
         if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !launched) {
             launched = true;
 
@@ -358,26 +375,51 @@ public class Level_1 implements Screen{
             float initialVelocityY = launchSpeed * (float) Math.sin(angleInRadians);
 
             // Apply the initial launch velocity
-            player.setLinearVelocity(initialVelocityX, initialVelocityY);
+            PP.setLinearVelocity(initialVelocityX, initialVelocityY);
         }
 
         // Apply gravity to affect vertical velocity over time if launched
         if (launched) {
             // Get the current velocity
-            float currentVelocityX = player.getLinearVelocity().x;
-            float currentVelocityY = player.getLinearVelocity().y;
+            float currentVelocityX = PP.getLinearVelocity().x;
+            float currentVelocityY = PP.getLinearVelocity().y;
 
             // Update the vertical velocity to simulate gravity
-            player.setLinearVelocity(currentVelocityX, currentVelocityY + gravity * delta);
+            PP.setLinearVelocity(currentVelocityX, currentVelocityY + gravity * delta);
         }
     }
+    int x =30 , y =25;
+
     private void destroyBird() {
+
+        if(turn == 0){
+            PP = player;
+        }
+        else if(turn == 2){
+            PP = player2;
+        }
+        else if(turn == 1){
+            PP = player1;
+        }
         if (!isDestroyed) {
-            world.destroyBody(player); // Remove from the physics world
-             isDestroyed=true;// Dereference to avoid accidental reuse
-            System.out.println("Bird destroyed due to low momentum.");
+
+            // Move the bird to a safe position (e.g., above the map)
+            PP.setTransform(x, y , 0); // Example: move to (0, 100) above the map
+
+            // Optionally set its velocity to zero
+            PP.setLinearVelocity(0, 0);
+            PP.setAngularVelocity(0);
+            PP.setType(BodyDef.BodyType.StaticBody);
+            isDestroyed = true;
+            System.out.println("Bird moved above the map due to low momentum.");
+            turn++;
+            launched = false;
+            x=x+3;
+
+            System.out.println("DONE");
         }
     }
+
 
     private void cameraUpdate(float delta) {
         Vector3 position = app.camera.position;
