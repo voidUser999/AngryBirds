@@ -392,14 +392,17 @@ public class Level_1 implements Screen{
 
     private void destroyBird() {
 
+        System.out.println("Destroying " + turn + isDestroyed);
         if(turn == 0){
             PP = player;
         }
-        else if(turn == 2){
+        else if(turn == 2 && launched){
             PP = player2;
+            isDestroyed = false;
         }
-        else if(turn == 1){
+        else if(turn == 1 && launched){
             PP = player1;
+            isDestroyed = false;
         }
         if (!isDestroyed) {
 

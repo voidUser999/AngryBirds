@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class MyContactListener implements ContactListener {
     private final Array<Body> bodiesToDestroy = new Array<>();
-    private float playerHealth = 500f; // Initialize player health
+    private float playerHealth = 5000f; // Initialize player health
 
     @Override
     public void beginContact(Contact contact) {
