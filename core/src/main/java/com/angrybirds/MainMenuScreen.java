@@ -1,6 +1,7 @@
 package com.angrybirds;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -62,6 +63,10 @@ public class MainMenuScreen implements Screen {
     private Texture m;
     private Texture m2;
 
+    private boolean isMusicMuted = false;
+    private boolean isSoundMuted = false;
+    private Preferences preferences;
+
 
 
     private ShapeRenderer shapeRenderer;
@@ -91,6 +96,12 @@ public class MainMenuScreen implements Screen {
 
 
         blurTex = new Texture("blur_bg.png");
+
+        preferences = Gdx.app.getPreferences("AngryBirdsPrefs");
+
+
+        isMusicMuted = preferences.getBoolean("isMusicMuted", false);
+        isSoundMuted = preferences.getBoolean("isSoundMuted", false);
 
     }
 
@@ -127,8 +138,36 @@ public class MainMenuScreen implements Screen {
 
 
     }
+    private void updateButtonImage() {
+        if (app.isMusicMuted) {
+            // Set the button style to the muted image (m2)
+            button3.getStyle().up = new TextureRegionDrawable(new TextureRegion(m2));
+            button3.getStyle().over = new TextureRegionDrawable(new TextureRegion(m2));
+            button3.getStyle().down = new TextureRegionDrawable(new TextureRegion(m2));
+        } else {
+            // Set the button style to the unmuted image (m)
+            button3.getStyle().up = new TextureRegionDrawable(new TextureRegion(m));
+            button3.getStyle().over = new TextureRegionDrawable(new TextureRegion(m));
+            button3.getStyle().down = new TextureRegionDrawable(new TextureRegion(m));
+        }
+    }
+
+    private void updateSoundButtonImage() {
+        if (isSoundMuted) {
+
+            button2.getStyle().up = new TextureRegionDrawable(new TextureRegion(s2));
+            button2.getStyle().over = new TextureRegionDrawable(new TextureRegion(s2));
+        } else {
+
+            button2.getStyle().up = new TextureRegionDrawable(new TextureRegion(s));
+            button2.getStyle().over = new TextureRegionDrawable(new TextureRegion(s));
+        }
+    }
 
     private void initButtons() {
+
+
+
         TextureRegionDrawable buttonUp = new TextureRegionDrawable(new TextureRegion(bptex));
         TextureRegionDrawable buttonDown = new TextureRegionDrawable(new TextureRegion(bptex2));
         TextureRegionDrawable buttonOver = new TextureRegionDrawable(new TextureRegion(bptex2));
@@ -162,7 +201,7 @@ public class MainMenuScreen implements Screen {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                app.setScreen(app.level_1);
+                app.setScreen(app.story);
             }
         });
 
@@ -266,82 +305,134 @@ public class MainMenuScreen implements Screen {
         settingsStage.addActor(blurBackground);
 
 
+
         TextureRegionDrawable buttonUp1 = new TextureRegionDrawable(new TextureRegion(s));
         TextureRegionDrawable buttonDown1 = new TextureRegionDrawable(new TextureRegion(s2));
-        TextureRegionDrawable buttonOver1 = new TextureRegionDrawable(new TextureRegion(s2));
+        TextureRegionDrawable buttonOver1 = new TextureRegionDrawable(new TextureRegion(s));
 
         ImageButton.ImageButtonStyle buttonStyle = new ImageButton.ImageButtonStyle();
         buttonStyle.up = buttonUp1;
         buttonStyle.down = buttonDown1;
         buttonStyle.over = buttonOver1;
 
-
         button2 = new ImageButton(buttonStyle);
-        button2.setPosition((float) angryBirds.V_WIDTH / 2 - 275, (float) angryBirds.V_HEIGHT / 2 - 20);
-        button2.setSize(235 , 235);
-        button2.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
-        button2.addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
-                    button2.addAction(Actions.moveBy(+5, -5, 0.1f));
-                }
-            }
+        button2.setPosition((float) angryBirds.V_WIDTH / 2 - 275, (float) angryBirds.V_HEIGHT / 2 - 20); // Position button
+        button2.setSize(235, 235);
 
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
-                    button2.addAction(Actions.moveBy(-5, 5, 0.1f));
-                }
-            }
+
+        updateSoundButtonImage();
+
+
+        button2.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-//                sound mute krne ka logic
+                isSoundMuted = !isSoundMuted;
+                preferences.putBoolean("isSoundMuted", isSoundMuted);
+                preferences.flush();
+
+
+                updateSoundButtonImage();
+
+
+                if (isSoundMuted) {
+                    System.out.println("Sound is muted");
+                } else {
+                    System.out.println("Sound is unmuted");
+                }
             }
         });
+//        button2.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//                // Toggle sound mute state using the toggleSound() method from angryBirds
+//                app.toggleSound();  // Assuming 'angryBirdsInstance' is your angryBirds class instance
+//
+//                // Save the sound mute state to preferences
+//                preferences.putBoolean("isSoundMuted", app.isSoundMuted);
+//                preferences.flush();
+//
+//                // Update button image
+//                updateSoundButtonImage();
+//
+//                // Print the state of sound mute
+//                if (app.isSoundMuted) {
+//                    System.out.println("Sound is muted");
+//                } else {
+//                    System.out.println("Sound is unmuted");
+//                }
+//            }
+//        });
+
+
+
+
 
 
 
 
         TextureRegionDrawable buttonUp2 = new TextureRegionDrawable(new TextureRegion(m));
         TextureRegionDrawable buttonDown2 = new TextureRegionDrawable(new TextureRegion(m2));
-        TextureRegionDrawable buttonOver2 = new TextureRegionDrawable(new TextureRegion(m2));
+        TextureRegionDrawable buttonOver2 = new TextureRegionDrawable(new TextureRegion(m));
 
         buttonStyle = new ImageButton.ImageButtonStyle();
-        buttonStyle.up = buttonUp2;      // Default button texture
-        buttonStyle.down = buttonDown2;  // Texture when button is pressed
+        buttonStyle.up = buttonUp2;
+        buttonStyle.down = buttonDown2;
         buttonStyle.over = buttonOver2;
 
-
         button3 = new ImageButton(buttonStyle);
-        button3.setPosition((float) angryBirds.V_WIDTH / 2 + 80, (float) angryBirds.V_HEIGHT / 2 - 20);
-        button3.setSize(235 , 235);
-        button3.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
-        button3.addListener(new ClickListener() {
-            @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
-                    button3.addAction(Actions.moveBy(+5, -5, 0.1f));
-                }
-            }
+        button3.setPosition((float) angryBirds.V_WIDTH / 2 - 5, (float) angryBirds.V_HEIGHT / 2 - 20);
+        button3.setSize(235, 235);
 
-            @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
-                    button3.addAction(Actions.moveBy(-5, 5, 0.1f));
-                }
-            }
+
+        updateButtonImage();
+
+
+//        button3.addListener(new ClickListener() {
+//            @Override
+//            public void clicked(InputEvent event, float x, float y) {
+//
+//                isMusicMuted = !isMusicMuted;
+//                preferences.putBoolean("isMusicMuted", isMusicMuted);
+//                preferences.flush();
+//
+//
+//                updateButtonImage();
+//
+//
+//                if (isMusicMuted) {
+//                    System.out.println("Music is muted");
+//                } else {
+//                    System.out.println("Music is unmuted");
+//                }
+//            }
+//        });
+
+
+
+                button3.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                // Toggle music mute state using the toggleMusic() method from angryBirds
+                app.toggleMusic();  // Assuming 'angryBirdsInstance' is your angryBirds class instance
 
-//                music mute krne ka logic
+                // Save the music mute state to preferences
+                preferences.putBoolean("isMusicMuted", app.isMusicMuted);
+                preferences.flush();
+
+                // Update button image
+                updateButtonImage();
+
+                // Print the state of music mute
+                if (app.isMusicMuted) {
+                    System.out.println("Music is muted");
+                } else {
+                    System.out.println("Music is unmuted");
+                }
             }
         });
+
+
 
 
 
@@ -383,6 +474,9 @@ public class MainMenuScreen implements Screen {
                 app.setScreen(app.mainMenuScreen);
             }
         });
+
+
+
 
 
         settingsStage.addActor(button2);
