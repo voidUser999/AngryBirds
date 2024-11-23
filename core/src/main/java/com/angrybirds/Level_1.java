@@ -60,6 +60,11 @@ public class Level_1 implements Screen{
     private int bb ;
     private MyContactListener contactListener;
     private boolean isDestroyed = false;
+
+    //bird properties
+    private HashMap<Body ,Prop> birdProp;
+
+
     public Level_1(final angryBirds app){
 
         this.app = app;
@@ -84,31 +89,47 @@ public class Level_1 implements Screen{
             // Reuse the saved world
             this.world = savedWorld;
         } else {
-
-
+            // Initialize the world
             world = new World(new Vector2(0, -9.6f), false);
-            contactListener = new MyContactListener();
-            world.setContactListener(contactListener);
-            launched = false;
-            player = createBox(100, 100, 70, 70, false , "this" , 0.5f);
-            player1 = createBox(100, 100, 70, 70, false , "this" , 0.5f);
-            player2 = createBox(100, 100, 70, 70, false , "this" , 0.5f);
-            platform = createBox(100, 40, 50, 30000, true , "data" , -1f);
 
+            // Initialize birdProp HashMap
+            birdProp = new HashMap<>();
+
+            // Create players and assign properties
+            player = createBox(100, 100, 70, 70, false, "thisRed0", 0.5f);
+            player1 = createBox(100, 100, 70, 70, false, "thisRed1", 0.5f);
+            player2 = createBox(100, 100, 70, 70, false, "thisRed2", 0.5f);
+
+            // Populate birdProp
+            birdProp.put(player, new Prop());
+            birdProp.put(player1, new Prop());
+            birdProp.put(player2, new Prop());
+
+            // Create platform
+            platform = createBox(100, 40, 50, 30000, true, "data", -1f);
+
+            // Set up Contact Listener AFTER birdProp is populated
+            contactListener = new MyContactListener(birdProp);
+            world.setContactListener(contactListener);
+
+            launched = false;
+
+            // Load the map
             if (map != null) {
                 map.dispose();
             }
 
             map = new TmxMapLoader().load("map/level1.tmx");
             tmr = new OrthogonalTiledMapRenderer(map);
-//        TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 2").getObjects() , true);
-            // TiledObjectUtil.parseTiledObjectLayer(world , map.getLayers().get("Object Layer 1").getObjects() , false);
+
             // Initialize the world in TiledObjectUtil
             TiledObjectUtil.initialize(world);
 
-// Now call parseTiledObjectLayer with the updated parameters
+            // Parse the map layers
             TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
         }
+
+        // Clear and reinitialize stages
         stage.clear();
         pauseStage.clear();
         endStage.clear();
@@ -118,14 +139,15 @@ public class Level_1 implements Screen{
         isEndScreen = false;
         isPaused = false;
 
-
+        // Set the input processor
         Gdx.input.setInputProcessor(stage);
+
+        // Set up back button
         back = new ImageButton(new TextureRegionDrawable(tex));
         back.setPosition(100, 200); // Position within bounds
-        back.setSize(120, 120);  // Ensure size is visible
+        back.setSize(120, 120); // Ensure size is visible
         back.setColor(1, 1, 1, 1); // Full opacity
         stage.addActor(back);
-
     }
 
     private void clearWorld() {
@@ -205,6 +227,8 @@ public class Level_1 implements Screen{
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
                 clearWorld();
+                launched = false;
+                turn = 0;
                 app.setScreen(app.level_1);
 
                 mmb.clearActions();
