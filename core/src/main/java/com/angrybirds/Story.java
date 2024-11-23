@@ -29,7 +29,6 @@ public class Story implements Screen {
     private void initialize() {
         batch = new SpriteBatch();
 
-        // Initialize the slideshow textures
         slides = new Texture[4];
         slides[0] = new Texture("assets/slide1.png");
         slides[1] = new Texture("assets/slide2.png");
@@ -43,7 +42,7 @@ public class Story implements Screen {
         currentSlide = 0;
         alpha = 1f;
 
-        // Add the blurred background image
+
         Image blurBackground = new Image(new TextureRegionDrawable(new TextureRegion(blurBackgroundTexture)));
         blurBackground.setSize(angryBirds.V_WIDTH, angryBirds.V_HEIGHT);
         blurBackground.setPosition(0, 0);
@@ -59,7 +58,7 @@ public class Story implements Screen {
     public void render(float delta) {
         elapsedTime += delta;
 
-        // Transition to the next slide every 1.5 seconds
+
         if (elapsedTime > 1.5f) {
             elapsedTime = 0f;
             currentSlide = (currentSlide + 1) % slides.length;
@@ -72,16 +71,16 @@ public class Story implements Screen {
             }
         }
 
-        // Gradual fade-in effect for the current slide
+
         if (alpha < 1f) {
-            alpha += delta * 2; // Speed of the fade-in effect
+            alpha += delta * 2;
         }
 
         // Start drawing the stage
         stage.act(delta);
         stage.draw();
 
-        // Draw the current slide in the center of the screen
+
         batch.begin();
         batch.setColor(1f, 1f, 1f, alpha);
 
@@ -89,17 +88,17 @@ public class Story implements Screen {
         float textureWidth = currentTexture.getWidth();
         float textureHeight = currentTexture.getHeight();
 
-        // Calculate scale factor to fit the image proportionally within the screen
+
         float scale = Math.min((float) angryBirds.V_WIDTH / textureWidth,
             (float) angryBirds.V_HEIGHT / textureHeight);
 
-        // Apply a scale factor to ensure images are not too large
+
         scale *= 0.65f;
 
         float scaledWidth = textureWidth * scale;
         float scaledHeight = textureHeight * scale;
 
-        // Center the scaled texture
+
         float xPosition = (angryBirds.V_WIDTH - scaledWidth) / 2 - 250;
         float yPosition = (angryBirds.V_HEIGHT - scaledHeight) / 2 - 150;
 
@@ -117,12 +116,12 @@ public class Story implements Screen {
 
     @Override
     public void pause() {
-        // Handle pause if needed
+
     }
 
     @Override
     public void resume() {
-        // Handle resume if needed
+
     }
 
     @Override
