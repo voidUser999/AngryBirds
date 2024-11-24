@@ -4,12 +4,14 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.TextureData;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -63,6 +65,8 @@ public class Level_1 implements Screen{
 
     //bird properties
     private HashMap<Body ,Prop> birdProp;
+    private HashMap<Body ,wood> woodProp;
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
 
     public Level_1(final angryBirds app){
@@ -90,7 +94,7 @@ public class Level_1 implements Screen{
             this.world = savedWorld;
         } else {
             // Initialize the world
-            world = new World(new Vector2(0, -9.6f), false);
+            world = new World(new Vector2(0, -9.8f), false);
 
             // Initialize birdProp HashMap
             birdProp = new HashMap<>();
@@ -228,6 +232,7 @@ public class Level_1 implements Screen{
                 isPaused = false;
                 clearWorld();
                 launched = false;
+                isDestroyed = false;
                 turn = 0;
                 app.setScreen(app.level_1);
 
@@ -297,7 +302,11 @@ public class Level_1 implements Screen{
 
         // Check if the game is paused
         if (!isPaused && !isEndScreen) {
-            update(delta);  // Only update the world when not paused or in the end screen
+            update(delta);
+           // inputUpdate(delta);// Only update the world when not paused or in the end screen
+
+
+            handleInput();
         }
 
         // Render the tiled map
@@ -316,7 +325,11 @@ public class Level_1 implements Screen{
         // Draw objects from TiledObjectUtil
         TiledObjectUtil.renderAllBodies(app.batch);
         app.batch.end();
-
+        if (isDragging) {
+            app.batch.begin();
+            drawSlingLine(slingStart, slingEnd);
+            app.batch.end();// Draw a line for the slingshot
+        }
         // Handle UI rendering
         if (isPaused) {
             Gdx.input.setInputProcessor(pauseStage);
@@ -330,9 +343,9 @@ public class Level_1 implements Screen{
             stage.draw();
         }
     }
-    private boolean isLowMomentum = false; // To track if bird has low momentum
-    private final float MOMENTUM_THRESHOLD = 0.5f; // Speed threshold
-    private final float MOMENTUM_TIMEOUT = 1.5f; // 3-second timeout for low momentum
+    private boolean isLowMomentum = false;
+    private final float MOMENTUM_THRESHOLD = 0.5f;
+    private final float MOMENTUM_TIMEOUT = 1.5f;
     public void update(float delta){
         stage.act(delta);
         world.step(1/60f , 6 , 2);
@@ -366,51 +379,136 @@ public class Level_1 implements Screen{
             }
         }
 
-        inputUpdate(delta);
+
         //camera moves with player
 
         cameraUpdate(delta);
         tmr.setView(app.camera);
         app.batch.setProjectionMatrix(app.camera.combined);
     }
-    boolean launched = false;
-    float launchSpeed = 24;       // Adjust as needed
-    float launchAngle = 55;        // Launch angle in degrees
-    float gravity = -6.8f;         // Gravity constant
+     boolean launched = false;
+//    float launchSpeed = 24;       // Adjust as needed
+//    float launchAngle = 55;        // Launch angle in degrees
+//    float gravity = -6.8f;         // Gravity constant
+//
+//    public void inputUpdate(float delta) {
+//        if(turn == 0){
+//            PP = player;
+//        }
+//        else if(turn == 2){
+//            PP = player2;
+//        }
+//        else if(turn == 1){
+//            PP = player1;
+//        }
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !launched) {
+//            launched = true;
+//
+//            // Convert angle to radians for trigonometric calculations
+//            float angleInRadians = (float) Math.toRadians(launchAngle);
+//
+//            // Calculate initial velocity components
+//            float initialVelocityX = launchSpeed * (float) Math.cos(angleInRadians);
+//            float initialVelocityY = launchSpeed * (float) Math.sin(angleInRadians);
+//
+//            // Apply the initial launch velocity
+//            PP.setLinearVelocity(initialVelocityX, initialVelocityY);
+//        }
+//
+//        // Apply gravity to affect vertical velocity over time if launched
+//        if (launched) {
+//            // Get the current velocity
+//            float currentVelocityX = PP.getLinearVelocity().x;
+//            float currentVelocityY = PP.getLinearVelocity().y;
+//
+//            // Update the vertical velocity to simulate gravity
+//            PP.setLinearVelocity(currentVelocityX, currentVelocityY + gravity * delta);
+//        }
+//    }
 
-    public void inputUpdate(float delta) {
-        if(turn == 0){
+    // Add variables for slingshot mechanics
+    private boolean isDragging = false;
+    private Vector2 slingStart = new Vector2(); // Starting position of the bird
+    private Vector2 slingEnd = new Vector2();   // End position after drag
+    private float maxDragDistance = 100f;// To check if the bird is being dragged
+    private Vector2 visualBirdPosition = new Vector2(); // For smooth dragging visuals
+    private int trajectoryPoints = 20; // Number of trajectory points to draw
+    private float trajectoryTimeStep = 0.1f; // Time step between trajectory points
+
+    private void handleInput() {
+        if (turn == 0) {
             PP = player;
-        }
-        else if(turn == 2){
+        } else if (turn == 2) {
             PP = player2;
-        }
-        else if(turn == 1){
+        } else if (turn == 1) {
             PP = player1;
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP) && !launched) {
+
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { // If left mouse button is pressed
+            Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            app.camera.unproject(touchPos); // Convert to world coordinates
+
+            Vector2 touchPoint = new Vector2(touchPos.x, touchPos.y);
+
+            if (!isDragging && PP.getPosition().dst(touchPoint.scl(1 / PPM)) <= 1) {
+                isDragging = true;
+                slingStart.set(PP.getPosition().scl(PPM));
+            }
+
+            if (isDragging) {
+                slingEnd.set(touchPoint);
+
+                // Limit drag distance
+                if (slingEnd.dst(slingStart) > maxDragDistance) {
+                    slingEnd.set(slingStart.cpy().add(slingEnd.cpy().sub(slingStart).nor().scl(maxDragDistance)));
+                }
+
+                // Update visual bird position for dragging effect
+                visualBirdPosition.set(slingEnd.cpy());
+            }
+        } else if (isDragging) { // Mouse released
+            isDragging = false;
             launched = true;
 
-            // Convert angle to radians for trigonometric calculations
-            float angleInRadians = (float) Math.toRadians(launchAngle);
+            // Calculate launch force
+            Vector2 launchForce = slingStart.cpy().sub(slingEnd).scl(10f); // Scale for desired launch power
+            PP.setLinearVelocity(launchForce.scl(1 / PPM));
+        }
+    }
 
-            // Calculate initial velocity components
-            float initialVelocityX = launchSpeed * (float) Math.cos(angleInRadians);
-            float initialVelocityY = launchSpeed * (float) Math.sin(angleInRadians);
+    // Render slingshot line and trajectory
+    private void drawSlingLine(Vector2 start, Vector2 end) {
+        // Draw slingshot line
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.RED);
+        shapeRenderer.line(start.x, start.y, end.x, end.y);
+        shapeRenderer.end();
 
-            // Apply the initial launch velocity
-            PP.setLinearVelocity(initialVelocityX, initialVelocityY);
+        // Draw trajectory dots
+        drawTrajectoryDots(start, end);
+    }
+
+    private void drawTrajectoryDots(Vector2 start, Vector2 end) {
+        Vector2 launchForce = start.cpy().sub(end).scl(10f); // Scale for trajectory simulation
+        Vector2 position = PP.getPosition().cpy();
+        Vector2 velocity = launchForce.scl(1 / PPM); // Convert to world scale
+        float gravity = world.getGravity().y; // Use Box2D gravity
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.PINK);
+
+        for (int i = 0; i < trajectoryPoints; i++) {
+            float time = i * trajectoryTimeStep;
+
+            // Calculate trajectory point
+            float x = position.x + velocity.x * time;
+            float y = position.y + velocity.y * time + 0.5f * gravity * time * time;
+
+            // Draw point
+            shapeRenderer.circle(x * PPM, y * PPM, 3); // Scale to PPM
         }
 
-        // Apply gravity to affect vertical velocity over time if launched
-        if (launched) {
-            // Get the current velocity
-            float currentVelocityX = PP.getLinearVelocity().x;
-            float currentVelocityY = PP.getLinearVelocity().y;
-
-            // Update the vertical velocity to simulate gravity
-            PP.setLinearVelocity(currentVelocityX, currentVelocityY + gravity * delta);
-        }
+        shapeRenderer.end();
     }
     int x =30 , y =25;
 
@@ -559,6 +657,7 @@ public class Level_1 implements Screen{
             }
         }, MOMENTUM_TIMEOUT); // Timeout after 3 seconds
     }
+
 
     //getting the ppm value * it if setting the ppm value divide it
 

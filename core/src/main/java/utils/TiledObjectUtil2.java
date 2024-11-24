@@ -1,6 +1,8 @@
 package utils;
 
-import com.angrybirds.*;
+import com.angrybirds.glass;
+import com.angrybirds.stone;
+import com.angrybirds.wood;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,18 +18,15 @@ import java.util.Map;
 
 import static utils.Constants.PPM;
 
-public class TiledObjectUtil {
+public class TiledObjectUtil2 {
 
     private static World world;
     private static final Map<Body, String> bodyTextures = new HashMap<>();
     private static final Map<String, Texture> textureCache = new HashMap<>();
 
-
     static HashMap<Body, wood> woodProp = new HashMap<>();
     static HashMap<Body, stone> stoneProp = new HashMap<>();
     static HashMap<Body, glass> glassProp = new HashMap<>();
-    static HashMap<Body, enemy0> enemy0Prop = new HashMap<>();
-    static HashMap<Body, enemy1> enemy1Prop = new HashMap<>();
 
     public static void initialize(World worldInstance) {
         world = worldInstance;
@@ -55,10 +54,7 @@ public class TiledObjectUtil {
             }
 
             // Create Box2D body at the centroid
-
-
             String type = (String) polyObj.getProperties().get("Type");
-            System.out.println("body type " + type);
             Body body = createPolygon(vertices, centroid, isStatic , type);
 
             // Retrieve the texture name and associate it with the body
@@ -93,34 +89,18 @@ public class TiledObjectUtil {
         fixtureDef.restitution = 0.2f;
 
 
-
-        if ("woodblock".equalsIgnoreCase(type)) {
+        if ("wood".equalsIgnoreCase(type)) {
             wood woodBlock = new wood(); // Create wood instance
             woodProp.put(body, woodBlock);
             body.createFixture(fixtureDef).setUserData("woodblock");
-        } else if ("stoneblock".equalsIgnoreCase(type)) {
+        } else if ("stone".equalsIgnoreCase(type)) {
             stone stoneBlock = new stone(); // Create stone instance
             stoneProp.put(body, stoneBlock);
             body.createFixture(fixtureDef).setUserData("stoneblock");
-        } else if ("glassblock".equalsIgnoreCase(type)) {
+        } else if ("glass".equalsIgnoreCase(type)) {
             glass glassBlock = new glass(); // Create glass instance
             glassProp.put(body, glassBlock);
             body.createFixture(fixtureDef).setUserData("glassblock");
-        }
-        else if("pig0".equalsIgnoreCase(type)) {
-            enemy0 pig0 = new enemy0();
-            enemy0Prop.put(body, pig0);
-            body.createFixture(fixtureDef).setUserData("pig0");
-
-        }
-        else if("pig1".equalsIgnoreCase(type)) {
-            enemy1 pig1 = new enemy1();
-            enemy1Prop.put(body, pig1);
-            body.createFixture(fixtureDef).setUserData("pig1");
-        }
-        else {
-            // Default fixture for untyped objects
-            body.createFixture(fixtureDef).setUserData("userdata");
         }
 
         shape.dispose();
@@ -193,7 +173,7 @@ public class TiledObjectUtil {
     }
 
     public static void setWoodProp(HashMap<Body, wood> woodProp) {
-        TiledObjectUtil.woodProp = woodProp;
+        TiledObjectUtil2.woodProp = woodProp;
     }
 
     public static HashMap<Body, stone> getStoneProp() {
@@ -201,7 +181,7 @@ public class TiledObjectUtil {
     }
 
     public static void setStoneProp(HashMap<Body, stone> stoneProp) {
-        TiledObjectUtil.stoneProp = stoneProp;
+        TiledObjectUtil2.stoneProp = stoneProp;
     }
 
     public static HashMap<Body, glass> getGlassProp() {
@@ -209,22 +189,6 @@ public class TiledObjectUtil {
     }
 
     public static void setGlassProp(HashMap<Body, glass> glassProp) {
-        TiledObjectUtil.glassProp = glassProp;
-    }
-
-    public static HashMap<Body, enemy0> getEnemy0Prop() {
-        return enemy0Prop;
-    }
-
-    public static void setEnemy0Prop(HashMap<Body, enemy0> enemy0Prop) {
-        TiledObjectUtil.enemy0Prop = enemy0Prop;
-    }
-
-    public static HashMap<Body, enemy1> getEnemy1Prop() {
-        return enemy1Prop;
-    }
-
-    public static void setEnemy1Prop(HashMap<Body, enemy1> enemy1Prop) {
-        TiledObjectUtil.enemy1Prop = enemy1Prop;
+        TiledObjectUtil2.glassProp = glassProp;
     }
 }

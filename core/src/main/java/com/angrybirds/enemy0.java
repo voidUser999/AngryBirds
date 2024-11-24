@@ -1,12 +1,12 @@
 package com.angrybirds;
 
-public class Prop {
-  private  int hp;
-  private  double damage;
+public class enemy0 {
+    private  int hp;
+    private  double damage;
 
-    Prop() {
-       this.hp = 8;
-       this.damage = 2;
+    public enemy0() {
+        this.hp = 1;
+        this.damage = 1;
 
     }
 

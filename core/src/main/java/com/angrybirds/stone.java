@@ -1,10 +1,10 @@
 package com.angrybirds;
 
-public class wood {
+public class stone {
     float hp;
 
-    public wood() {
-        this.hp = 0.7F;
+    public stone() {
+        this.hp = 4;
     }
 
     public float getHp() {

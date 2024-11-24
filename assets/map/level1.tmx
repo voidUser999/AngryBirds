@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="384" height="216" tilewidth="5" tileheight="5" infinite="0" nextlayerid="8" nextobjectid="79">
+<map version="1.10" tiledversion="1.11.0" orientation="orthogonal" renderorder="right-down" width="384" height="216" tilewidth="5" tileheight="5" infinite="0" nextlayerid="8" nextobjectid="80">
  <tileset firstgid="1" source="../img_map/bl1_wood1_1.tsx"/>
  <tileset firstgid="129" source="../img_map/wood1_1.tsx"/>
  <tileset firstgid="265" source="../img_map/s_glass1_1.tsx"/>
@@ -244,149 +244,170 @@
 </data>
  </layer>
  <objectgroup id="6" name="Object Layer 1">
-  <object id="36" x="1421" y="447">
+  <object id="36" x="1420.88" y="448.002">
    <properties>
     <property name="ID" value="1"/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 79,-1 80,77 2,77"/>
+   <polygon points="0,0 79.1367,-1.00173 80.1384,77.1332 2.00346,77.1332"/>
   </object>
-  <object id="37" x="1399" y="529">
+  <object id="37" x="1398.84" y="530.143">
    <properties>
     <property name="ID" value="1"/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 75,0 75,73 0,75"/>
+   <polygon points="0,0 75.1298,0 75.1298,73.1263 0,75.1298"/>
   </object>
-  <object id="38" x="1385" y="526">
+  <object id="38" x="1384.82" y="527.139">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/tri1_wood1_1_r.png"/>
    </properties>
-   <polygon points="0,0 -76,77 3,75"/>
+   <polygon points="0,0 -76.1315,77.1332 3.00519,75.1298"/>
   </object>
-  <object id="39" x="1351" y="610">
+  <object id="39" x="1350.76" y="611.284">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/long_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 195,-2 196,14 4,13"/>
+   <polygon points="0,0 195.337,-2.00346 196.339,14.0242 4.00692,13.0225"/>
   </object>
-  <object id="40" x="1526" y="631">
+  <object id="40" x="1526.06" y="632.32">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/long_wood1_1_v.png"/>
    </properties>
-   <polygon points="0,0 19,-1 16,190 1,190"/>
+   <polygon points="0,0 19.0329,-1.00173 16.0277,190.329 1.00173,190.329"/>
   </object>
-  <object id="41" x="1357" y="630">
+  <object id="41" x="1356.77" y="631.318">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/long_wood1_1_v.png"/>
    </properties>
-   <polygon points="0,0 16,0 16,190 -1,190"/>
+   <polygon points="0,0 16.0277,0 16.0277,190.329 -1.00173,190.329"/>
   </object>
-  <object id="42" x="1350" y="828">
+  <object id="42" x="1349.76" y="829.661">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/long_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 198,-1 198,15 1,17"/>
+   <polygon points="0,0 198.343,-1.00173 198.343,15.026 1.00173,17.0294"/>
   </object>
-  <object id="43" x="1356" y="853">
+  <object id="43" x="1355.76" y="854.704">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/long_wood1_1_v.png"/>
    </properties>
-   <polygon points="0,0 19,-2 18,170 -3,170"/>
+   <polygon points="0,0 19.0329,-2.00346 18.0311,170.294 -3.00519,170.294"/>
   </object>
-  <object id="44" x="1382" y="869">
+  <object id="44" x="1381.81" y="870.732">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="stoneblock"/>
     <property name="texture" value="img_map/mats/sqr_stone1_1.png"/>
    </properties>
-   <polygon points="0,0 72,0 71,75 -3,74"/>
+   <polygon points="0,0 72.1246,0 71.1228,75.1298 -3.00519,74.128"/>
   </object>
-  <object id="45" x="1381" y="952">
+  <object id="45" x="1380.8" y="953.875">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 72,-3 72,68 -1,69"/>
+   <polygon points="0,0 72.1246,-3.00519 72.1246,68.1177 -1.00173,69.1194"/>
   </object>
-  <object id="46" x="1532" y="851">
+  <object id="46" x="1532.07" y="852.701">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/long_wood1_1_v.png"/>
    </properties>
-   <polygon points="0,0 15,-1 18,173 -1,172"/>
+   <polygon points="0,0 15.026,-1.00173 18.0311,173.299 -1.00173,172.298"/>
   </object>
-  <object id="47" x="1576" y="886">
+  <object id="47" x="1576.14" y="887.762">
    <properties>
+    <property name="Type" value="stoneblock"/>
     <property name="texture" value="img_map/mats/wood1_1.png"/>
    </properties>
-   <polygon points="0,0 15,-1 16,136 -1,136"/>
+   <polygon points="0,0 15.026,-1.00173 16.0277,136.236 -1.00173,136.236"/>
   </object>
-  <object id="48" x="1631" y="886">
+  <object id="48" x="1631.24" y="887.762">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/wood1_1.png"/>
    </properties>
-   <polygon points="0,0 16,-2 17,138 0,137"/>
+   <polygon points="0,0 16.0277,-2.00346 17.0294,138.238 0,137.237"/>
   </object>
-  <object id="49" x="1571" y="804">
+  <object id="49" x="1571.14" y="805.619">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 76,-1 78,70 2,71"/>
+   <polygon points="0,0 76.1315,-1.00173 78.1349,70.1211 2.00346,71.1228"/>
   </object>
-  <object id="50" x="1580" y="724">
+  <object id="50" x="1580.15" y="725.481">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="glassblock"/>
     <property name="texture" value="img_map/mats/s_stone1_1.png"/>
    </properties>
-   <polygon points="0,0 16,-2 18,71 0,73"/>
+   <polygon points="0,0 16.0277,-2.00346 18.0311,71.1228 0,73.1263"/>
   </object>
-  <object id="51" x="1627" y="724">
+  <object id="51" x="1627.23" y="725.481">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/s_glass1_1.png"/>
    </properties>
-   <polygon points="0,0 15,-1 16,72 -2,73"/>
+   <polygon points="0,0 15.026,-1.00173 16.0277,72.1246 -2.00346,73.1263"/>
   </object>
-  <object id="52" x="1573" y="645">
+  <object id="52" x="1573.14" y="646.345">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/sqr_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 74,-2 76,72 0,73"/>
+   <polygon points="0,0 74.128,-2.00346 76.1315,72.1246 0,73.1263"/>
   </object>
-  <object id="53" x="1596" y="560">
+  <object id="53" x="1596.18" y="561.197">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/tri1_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 -1,76 80,80"/>
+   <polygon points="0,0 -1.00173,76.1315 80.1384,80.1384"/>
   </object>
-  <object id="76" x="1381" y="751">
+  <object id="76" x="1380.8" y="752.528">
    <properties>
     <property name="ID" value=""/>
+    <property name="Type" value="woodblock"/>
     <property name="texture" value="img_map/mats/tri1_wood1_1.png"/>
    </properties>
-   <polygon points="0,0 -1,69 72,71"/>
+   <polygon points="0,0 -1.00173,69.1194 72.1246,71.1228"/>
   </object>
-  <object id="77" x="1472" y="706">
+  <object id="77" x="1471.97" y="707.45">
    <properties>
+    <property name="Type" value="pig1"/>
     <property name="texture" value="img_map/pigs/pig3_1.png"/>
    </properties>
-   <polygon points="0,0 -43,23 -44,58 -4,82 43,61 41,21"/>
+   <polygon points="0,0 -43.0744,23.0398 -44.0762,58.1004 -4.00692,82.1419 43.0744,61.1055 41.071,21.0363"/>
   </object>
-  <object id="78" x="1493" y="977">
+  <object id="78" x="1493" y="978.919">
    <properties>
+    <property name="Type" value="pig0"/>
     <property name="texture" value="img_map/pigs/pig4_1.png"/>
    </properties>
-   <polygon points="0,0 -17,13 -16,36 3,43 23,29 22,11"/>
+   <polygon points="0,0 -17.0294,13.0225 -16.0277,36.0623 3.00519,43.0744 23.0398,29.0502 22.0381,11.019"/>
   </object>
  </objectgroup>
  <objectgroup id="7" name="Object Layer 2" visible="0">

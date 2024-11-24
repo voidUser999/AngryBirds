@@ -149,8 +149,8 @@ public class angryBirds extends Game {
     public AssetManager assets;
 
     // Declare flags for music and sound
-    public boolean isMusicMuted = false;
-    public boolean isSoundMuted = false;
+    public boolean isMusicMuted = true;
+    public boolean isSoundMuted = true;
 
     // Declare music objects
     public Music gameMusic;

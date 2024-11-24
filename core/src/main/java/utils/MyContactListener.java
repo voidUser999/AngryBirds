@@ -23,25 +23,115 @@ public class MyContactListener implements ContactListener {
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
         // Bird (player) colliding with wall (box)
-        if ("thisRed0".equals(fa.getUserData()) && "userdata".equals(fb.getUserData())) {
-            handleCollision(fa.getBody(), fb.getBody());
+        //wood
+        System.out.println(fa.getUserData());
+        System.out.println(fb.getUserData());
+        if ("thisRed0".equals(fa.getUserData()) && "woodblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"woodblock");
 
-        } else if ("userdata".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
-            handleCollision(fb.getBody(), fa.getBody());
+        } else if ("woodblock".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"woodblock");
         }
-        else if ("thisRed1".equals(fa.getUserData()) && "userdata".equals(fb.getUserData())) {
-            handleCollision(fa.getBody(), fb.getBody());
+        else if ("thisRed1".equals(fa.getUserData()) && "woodblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"woodblock");
 
-        } else if ("userdata".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
-            handleCollision(fb.getBody(), fa.getBody());
+        } else if ("woodblock".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"woodblock");
         }
-        else if ("thisRed2".equals(fa.getUserData()) && "userdata".equals(fb.getUserData())) {
-            handleCollision(fa.getBody(), fb.getBody());
+        else if ("thisRed2".equals(fa.getUserData()) && "woodblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"woodblock");
 
         }
-        else if ("userdata".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
-            handleCollision(fb.getBody(), fa.getBody());
+        else if ("woodblock".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"woodblock");
         }
+
+        //stone
+        if ("thisRed0".equals(fa.getUserData()) && "stoneblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"stoneblock");
+
+        } else if ("stoneblock".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"stoneblock");
+        }
+        else if ("thisRed1".equals(fa.getUserData()) && "stoneblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"stoneblock");
+
+        } else if ("stoneblock".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"stoneblock");
+        }
+        else if ("thisRed2".equals(fa.getUserData()) && "stoneblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"stoneblock");
+
+        }
+        else if ("stoneblock".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"stoneblock");
+        }
+
+        //glass
+        if ("thisRed0".equals(fa.getUserData()) && "glassblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"glassblock");
+
+        } else if ("glassblock".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"glassblock");
+        }
+        else if ("thisRed1".equals(fa.getUserData()) && "glassblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"glassblock");
+
+        } else if ("glassblock".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"glassblock");
+        }
+        else if ("thisRed2".equals(fa.getUserData()) && "glassblock".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"glassblock");
+
+        }
+        else if ("glassblock".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody() ,"glassblock" );
+        }
+
+        //pig0 (small pig)
+
+        if ("thisRed0".equals(fa.getUserData()) && "pig0".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig0");
+
+        } else if ("pig0".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"pig0");
+        }
+        else if ("thisRed1".equals(fa.getUserData()) && "pig0".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig0");
+
+        } else if ("pig0".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"pig0");
+        }
+        else if ("thisRed2".equals(fa.getUserData()) && "pig0".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig0");
+
+        }
+        else if ("pig0".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody() ,"pig0" );
+        }
+
+        //pig1 (medium size)
+
+        if ("thisRed0".equals(fa.getUserData()) && "pig1".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig1");
+
+        } else if ("pig1".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"pig1");
+        }
+        else if ("thisRed1".equals(fa.getUserData()) && "pig1".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig1");
+
+        } else if ("pig1".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"pig1");
+        }
+        else if ("thisRed2".equals(fa.getUserData()) && "pig1".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig1");
+
+        }
+        else if ("pig1".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody() ,"pig1" );
+        }
+
     }
 
     @Override
@@ -53,20 +143,64 @@ public class MyContactListener implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse contactImpulse) {}
 
-    private void handleCollision(Body playerBody, Body otherBody) {
+    private void handleCollision(Body playerBody, Body otherBody, String ud) {
+        System.out.println("Handling collision...");
+        System.out.println("Player Body: " + playerBody);
+        System.out.println("Other Body: " + otherBody);
+        System.out.println("User Data (ud): " + ud);
+
         // Retrieve current health from the HashMap
-
+        float structHp = 5;
         float playerHealth = birdProp.get(playerBody).getHp();
-//        float speed = playerBody.getLinearVelocity().len();
-//        float damage = speed * 10;
-        float damage = (float) (1f*birdProp.get(playerBody).getDamage());
+        System.out.println("Initial Player Health: " + playerHealth);
 
-        // Subtract damage from player health
+        // Calculate damage
+        float damage = (float) (1f * birdProp.get(playerBody).getDamage());
+        System.out.println("Calculated Damage: " + damage);
+
+        // Determine structure health based on user data
+        if ("woodblock".equals(ud)) {
+            structHp = TiledObjectUtil.getWoodProp().get(otherBody).getHp();
+        } else if ("stoneblock".equals(ud)) {
+            structHp = TiledObjectUtil.getStoneProp().get(otherBody).getHp();
+        } else if ("glassblock".equals(ud)) {
+            structHp = TiledObjectUtil.getGlassProp().get(otherBody).getHp();
+        } else if ("pig0".equals(ud)) {
+            structHp = TiledObjectUtil.getEnemy0Prop().get(otherBody).getHp();
+        }
+        else if ("pig1".equals(ud)) {
+            structHp = TiledObjectUtil.getEnemy1Prop().get(otherBody).getHp();
+
+        }
+
+        System.out.println("Structure Health Before Damage: " + structHp);
+
+        // Subtract damage from player health and structure health
         playerHealth -= damage;
-        System.out.println("Player Health: " + playerHealth);
+        structHp -= (float) birdProp.get(playerBody).getDamage();
+        System.out.println("Player Health After Damage: " + playerHealth);
+        System.out.println("Structure Health After Damage: " + structHp);
 
         // Update the health in the HashMap
         birdProp.get(playerBody).setHp((int) playerHealth);
+        if ("woodblock".equals(ud)) {
+            TiledObjectUtil.getWoodProp().get(otherBody).setHp((int) structHp);
+            System.out.println("Updated WoodBlock Health: " + structHp);
+        } else if ("stoneblock".equals(ud)) {
+            TiledObjectUtil.getStoneProp().get(otherBody).setHp((int) structHp);
+            System.out.println("Updated StoneBlock Health: " + structHp);
+        } else if ("glassblock".equals(ud)) {
+            TiledObjectUtil.getGlassProp().get(otherBody).setHp((int) structHp);
+            System.out.println("Updated GlassBlock Health: " + structHp);
+        } else if ("pig0".equals(ud)) {
+            TiledObjectUtil.getEnemy0Prop().get(otherBody).setHp((int) structHp);
+            System.out.println("Updated Pig0 Health: " + structHp);
+
+        } else if ("pig1".equals(ud)) {
+            TiledObjectUtil.getEnemy1Prop().get(otherBody).setHp((int) structHp);
+            System.out.println("Updated Pig1 Health: " + structHp);
+
+        }
 
         // If health is below zero, player can no longer destroy objects
         if (playerHealth <= 0) {
@@ -74,9 +208,15 @@ public class MyContactListener implements ContactListener {
             return;
         }
 
-        // Mark the other body for destruction
-        markForDestruction(otherBody);
+        // If structure health is below zero, mark it for destruction
+        if (structHp <= 0) {
+            System.out.println("Structure is destroyed! Marking for destruction...");
+            markForDestruction(otherBody);
+        } else {
+            System.out.println("Structure is still intact.");
+        }
     }
+
 
 
     private void markForDestruction(Body body) {
