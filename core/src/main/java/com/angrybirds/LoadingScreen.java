@@ -43,6 +43,8 @@ public class LoadingScreen implements Screen {
         app.assets.load("cursor1.png", Texture.class);
         app.assets.load("cursor2.png", Texture.class);
         app.assets.load("levels.png", Texture.class);
+        //birds tex
+        app.assets.load("levels2.png", Texture.class);
 
     }
 

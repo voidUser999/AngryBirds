@@ -46,7 +46,7 @@ public class Level_1 implements Screen{
     private final angryBirds app;
     private Stage stage;
     private Box2DDebugRenderer b2dr;
-    private Body player , platform , player1 , player2 ;
+    private Body player , platform , player1 , player2 , platform1;
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private Texture tex;
@@ -55,7 +55,7 @@ public class Level_1 implements Screen{
     private Stage pauseStage;
     private Stage endStage1;
     private Stage endStage2;
-    private Texture  resumeTex, exitTex , savexTex ;
+    private Texture  resumeTex, exitTex , savexTex ,redBird ,yellowBird , blackBird ;
     private ImageButton back;
     private Texture endTex , end2Tex;
     private Image endImage;
@@ -72,6 +72,7 @@ public class Level_1 implements Screen{
     private HashMap<Body ,Prop> birdProp;
     private HashMap<Body ,wood> woodProp;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private Boolean resetWorld = true;
 
 
     public Level_1(final angryBirds app){
@@ -86,7 +87,10 @@ public class Level_1 implements Screen{
         endTex = new Texture("endScreen.png");
         end2Tex = new Texture("lose.png");
         b2dr = new Box2DDebugRenderer();
-        tex = new Texture("cat.png");
+        tex = new Texture("img.png");
+        redBird = new Texture("redBird.png");
+        yellowBird = new Texture("yellowBird.png");
+        blackBird = new Texture("blackBird.png");
 
         initButtons();
         initPauseMenu();
@@ -95,21 +99,17 @@ public class Level_1 implements Screen{
     }
     @Override
     public void show() {
-        if (worldSaved && savedWorld != null) {
-            // Reuse the saved world
-            this.world = savedWorld;
-            loadWorldState();  // Load the saved game state
-        } else {
-            // Initialize the world
+        if(resetWorld){
+
             world = new World(new Vector2(0, -9.8f), false);
 
-            // Initialize birdProp HashMap
+
             birdProp = new HashMap<>();
 
-            // Create players and assign properties
-            player = createBox(100, 100, 70, 70, false, "thisRed0", 0.2f);
-            player1 = createBox(100, 100, 70, 70, false, "thisRed1", 0.2f);
-            player2 = createBox(100, 100, 70, 70, false, "thisRed2", 0.2f);
+
+            player = createBox(270, 300, 70, 70, false, "thisRed0", 0.2f);
+            player1 = createBox(110, 100, 70, 70, false, "thisRed1", 0.2f);
+            player2 = createBox(80, 100, 70, 70, false, "thisRed2", 0.2f);
 
             // Populate birdProp
             birdProp.put(player, new Prop1());
@@ -118,7 +118,7 @@ public class Level_1 implements Screen{
 
             // Create platform
             platform = createBox(100, 40, 50, 30000, true, "data", -1f);
-
+            platform1 = createBox(270,200,2,120,true , "data",-1f);
             // Set up Contact Listener AFTER birdProp is populated
             contactListener = new MyContactListener(birdProp);
             world.setContactListener(contactListener);
@@ -133,10 +133,54 @@ public class Level_1 implements Screen{
             map = new TmxMapLoader().load("map/level1.tmx");
             tmr = new OrthogonalTiledMapRenderer(map);
 
-            // Initialize the world in TiledObjectUtil
+
             TiledObjectUtil.initialize(world);
 
-            // Parse the map layers
+
+            TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
+        }
+        else if (worldSaved && savedWorld != null  ) {
+            // Reuse the saved world
+            this.world = savedWorld;
+            loadWorldState();  // Load the saved game state
+        } else {
+            // Initialize the world
+            world = new World(new Vector2(0, -9.8f), false);
+
+            // Initialize birdProp HashMap
+            birdProp = new HashMap<>();
+
+            // Create players and assign properties
+            player = createBox(140, 100, 70, 70, false, "thisRed0", 0.2f);
+            player1 = createBox(110, 100, 70, 70, false, "thisRed1", 0.2f);
+            player2 = createBox(80, 100, 70, 70, false, "thisRed2", 0.2f);
+
+            // Populate birdProp
+            birdProp.put(player, new Prop1());
+            birdProp.put(player1, new Prop2());
+            birdProp.put(player2, new Prop3());
+
+            // Create platform
+            platform = createBox(100, 40, 50, 30000, true, "data", -1f);
+            platform1 = createBox(270,200,2,120,true , "data",-1f);
+
+            contactListener = new MyContactListener(birdProp);
+            world.setContactListener(contactListener);
+
+            launched = false;
+
+            // Load the map
+            if (map != null) {
+                map.dispose();
+            }
+
+            map = new TmxMapLoader().load("map/level1.tmx");
+            tmr = new OrthogonalTiledMapRenderer(map);
+
+
+            TiledObjectUtil.initialize(world);
+
+
             TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
         }
 
@@ -155,12 +199,7 @@ public class Level_1 implements Screen{
         // Set the input processor
         Gdx.input.setInputProcessor(stage);
 
-        // Set up back button
-        back = new ImageButton(new TextureRegionDrawable(tex));
-        back.setPosition(100, 200); // Position within bounds
-        back.setSize(120, 120); // Ensure size is visible
-        back.setColor(1, 1, 1, 1); // Full opacity
-        stage.addActor(back);
+
     }
 
     private void clearWorld() {
@@ -243,6 +282,7 @@ public class Level_1 implements Screen{
                 launched = false;
                 isDestroyed = false;
                 turn = 0;
+                resetWorld = true;
                 app.setScreen(app.level_1);
 
                 mmb.clearActions();
@@ -258,6 +298,7 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 saveWorldState();
+                resetWorld = false;
                 app.setScreen(app.levelsScreen);
             }
         });
@@ -294,7 +335,8 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.resetLevel1(true));
+
+                app.setScreen(app.mainMenuScreen);
             }
         });
 
@@ -331,7 +373,12 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.levelsScreen);
+                clearWorld();
+                launched = false;
+                isDestroyed = false;
+                turn = 0;
+                resetWorld = true;
+                app.setScreen(app.level_1);
             }
         });
 
@@ -356,15 +403,15 @@ public class Level_1 implements Screen{
         tmr.render();
 
         // Render Box2D debug lines (optional, for debugging purposes)
-        b2dr.render(world, app.camera.combined.scl(PPM));
+      //  b2dr.render(world, app.camera.combined.scl(PPM));
 
         // Begin sprite batch rendering for textures
         app.batch.begin();
 
         // Draw the player textures
-        app.batch.draw(tex, player.getPosition().x * PPM - 65, player.getPosition().y * PPM - 60, 110, 110);
-        app.batch.draw(tex, player1.getPosition().x * PPM - 65, player1.getPosition().y * PPM - 60, 110, 110);
-        app.batch.draw(tex, player2.getPosition().x * PPM - 65, player2.getPosition().y * PPM - 60, 110, 110);
+        app.batch.draw(redBird, player.getPosition().x * PPM - 45, player.getPosition().y * PPM - 40, 90, 90);
+        app.batch.draw(yellowBird, player1.getPosition().x * PPM - 45, player1.getPosition().y * PPM - 40, 90, 90);
+        app.batch.draw(blackBird, player2.getPosition().x * PPM - 45, player2.getPosition().y * PPM - 40, 90, 90);
 
         // Draw textures for polygon bodies
         renderPolygonTextures();
@@ -498,11 +545,15 @@ public class Level_1 implements Screen{
     private boolean checkWinScheduled = false; // Flag to ensure checkWin is called after the delay
 
     private void handleInput() {
+
         if (turn == 0) {
+
             PP = player;
         } else if (turn == 2) {
+
             PP = player2;
         } else if (turn == 1) {
+
             PP = player1;
         }
 
@@ -588,7 +639,7 @@ public class Level_1 implements Screen{
 
         shapeRenderer.end();
     }
-    int x =30 , y =25;
+    int x =48 , y =30;
 
     private void destroyBird() {
 
@@ -618,7 +669,12 @@ public class Level_1 implements Screen{
             turn++;
             launched = false;
             x=x+3;
-
+            if(turn == 1){
+                player1.setTransform(270 / PPM , 300 / PPM, player1.getAngle());
+            }
+            else if(turn == 2){
+                player2.setTransform(270 / PPM, 300 / PPM, player2.getAngle());
+            }
             System.out.println("DONE");
         }
     }
@@ -941,7 +997,7 @@ public class Level_1 implements Screen{
         BodyDef def = new BodyDef();
         def.position.set(bodyData.getX(), bodyData.getY());
         def.angle = bodyData.getAngle();
-        if(bodyData.getType().equals("platform")){
+        if(bodyData.getType().equals("platform") ){
             def.type = BodyDef.BodyType.StaticBody;
             Body body = world.createBody(def);
 
