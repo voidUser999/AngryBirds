@@ -5,7 +5,7 @@ public class Prop {
   private  double damage;
 
     Prop() {
-       this.hp = 8;
+       this.hp = 20;
        this.damage = 2;
 
     }

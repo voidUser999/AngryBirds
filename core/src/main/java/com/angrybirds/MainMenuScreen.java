@@ -201,7 +201,7 @@ public class MainMenuScreen implements Screen {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                app.setScreen(app.story);
+                app.setScreen(app.level_1);
             }
         });
 

@@ -11,16 +11,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Timer;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.Serializable;
 
 import static utils.Constants.PPM;
 
-public class TiledObjectUtil {
+public class TiledObjectUtil implements Serializable {
 
+  //  @Serial
+   // private static final long serialVersionUID = 1L;  // For versioning the serialized data
     private static World world;
-    private static final Map<Body, String> bodyTextures = new HashMap<>();
-    private static final Map<String, Texture> textureCache = new HashMap<>();
+    private static  Map<Body, String> bodyTextures = new HashMap<>();
+    private static  Map<String, Texture> textureCache = new HashMap<>();
 
 
     static HashMap<Body, wood> woodProp = new HashMap<>();
@@ -28,6 +32,9 @@ public class TiledObjectUtil {
     static HashMap<Body, glass> glassProp = new HashMap<>();
     static HashMap<Body, enemy0> enemy0Prop = new HashMap<>();
     static HashMap<Body, enemy1> enemy1Prop = new HashMap<>();
+
+    // Add additional fields for serializing positions
+   // private static Map<Body, BodyData> bodyDataMap = new HashMap<>();
 
     public static void initialize(World worldInstance) {
         world = worldInstance;
@@ -90,7 +97,7 @@ public class TiledObjectUtil {
         fixtureDef.shape = shape;
         fixtureDef.density = 1.0f;
         fixtureDef.friction = 0.5f;
-        fixtureDef.restitution = 0.2f;
+        //fixtureDef.restitution = 0.2f;
 
 
 
@@ -118,10 +125,10 @@ public class TiledObjectUtil {
             enemy1Prop.put(body, pig1);
             body.createFixture(fixtureDef).setUserData("pig1");
         }
-        else {
-            // Default fixture for untyped objects
-            body.createFixture(fixtureDef).setUserData("userdata");
-        }
+//        else {
+//            // Default fixture for untyped objects
+//            body.createFixture(fixtureDef).setUserData("userdata");
+//        }
 
         shape.dispose();
 
@@ -149,7 +156,7 @@ public class TiledObjectUtil {
         return centroid;
     }
 
-    private static Texture getTexture(String textureName) {
+    public static Texture getTexture(String textureName) {
         if (!textureCache.containsKey(textureName)) {
             textureCache.put(textureName, new Texture(textureName));
         }
@@ -226,5 +233,21 @@ public class TiledObjectUtil {
 
     public static void setEnemy1Prop(HashMap<Body, enemy1> enemy1Prop) {
         TiledObjectUtil.enemy1Prop = enemy1Prop;
+    }
+
+    public static Map<Body, String> getBodyTextures() {
+        return bodyTextures;
+    }
+
+    public static void setBodyTextures(Map<Body, String> bodyTextures) {
+        TiledObjectUtil.bodyTextures = bodyTextures;
+    }
+
+    public static Map<String, Texture> getTextureCache() {
+        return textureCache;
+    }
+
+    public static void setTextureCache(Map<String, Texture> textureCache) {
+        TiledObjectUtil.textureCache = textureCache;
     }
 }
