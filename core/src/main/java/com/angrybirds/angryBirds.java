@@ -284,4 +284,12 @@ public class angryBirds extends Game {
             buttonClickSound.play();
         }
     }
+    public Level_1 resetLevel1(Boolean reset) {
+        if(reset) { level_1 = new Level_1(this);
+            return level_1;
+        }
+       return null;
+    }
+
+
 }

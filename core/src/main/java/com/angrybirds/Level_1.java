@@ -112,9 +112,9 @@ public class Level_1 implements Screen{
             player2 = createBox(100, 100, 70, 70, false, "thisRed2", 0.2f);
 
             // Populate birdProp
-            birdProp.put(player, new Prop());
-            birdProp.put(player1, new Prop());
-            birdProp.put(player2, new Prop());
+            birdProp.put(player, new Prop1());
+            birdProp.put(player1, new Prop2());
+            birdProp.put(player2, new Prop3());
 
             // Create platform
             platform = createBox(100, 40, 50, 30000, true, "data", -1f);
@@ -294,7 +294,7 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-                app.setScreen(app.levelsScreen);
+                app.setScreen(app.resetLevel1(true));
             }
         });
 
@@ -891,6 +891,7 @@ public class Level_1 implements Screen{
 
     private void loadWorldState() {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("game_save.dat"))) {
+            Level_1 loadedLevel = (Level_1) in.readObject();
             GameState gameState = (GameState) in.readObject();
             List<BodyData> bodyDataList = gameState.getBodyDataList();
             List<PolygonBodyData> polygonBodyDataList = gameState.getPolygonBodyDataList();
@@ -983,23 +984,23 @@ public class Level_1 implements Screen{
 
         }
 
-        // Create a body
-        Body body = world.createBody(def);
-
-        // Set the body type and velocity based on the saved data
-        body.setLinearVelocity(bodyData.getVelocityX(), bodyData.getVelocityY());
-
-        // Recreate the body's fixtures (you need to know the shape and type of each body)
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(1, 1);  // Example, you might need to adjust this based on your object type
-
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f;
-        fixtureDef.friction = 0.5f;
-
-        body.createFixture(fixtureDef);
-        shape.dispose();
+//        // Create a body
+//        Body body = world.createBody(def);
+//
+//        // Set the body type and velocity based on the saved data
+//        body.setLinearVelocity(bodyData.getVelocityX(), bodyData.getVelocityY());
+//
+//        // Recreate the body's fixtures (you need to know the shape and type of each body)
+//        PolygonShape shape = new PolygonShape();
+//        shape.setAsBox(1, 1);  // Example, you might need to adjust this based on your object type
+//
+//        FixtureDef fixtureDef = new FixtureDef();
+//        fixtureDef.shape = shape;
+//        fixtureDef.density = 1.0f;
+//        fixtureDef.friction = 0.5f;
+//
+//        body.createFixture(fixtureDef);
+//        shape.dispose();
     }
 
 }

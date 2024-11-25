@@ -1,19 +1,20 @@
 package com.angrybirds;
 
-public abstract class Prop {
-    private int hp;
-    private double damage;
+public class Prop1 extends Prop{
+    private  int hp;
+    private  double damage;
 
-    // Constructor to initialize default values
-    protected Prop() {
+    Prop1() {
         this.hp = 20;
         this.damage = 2;
+
     }
 
-    // Abstract method for additional behavior (to be implemented by subclasses)
-    public abstract void interact();
+    @Override
+    public void interact() {
 
-    // Getters and setters for common properties
+    }
+
     public int getHp() {
         return hp;
     }
