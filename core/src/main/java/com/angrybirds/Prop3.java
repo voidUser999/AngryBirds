@@ -8,7 +8,7 @@ public class Prop3 extends Prop {
 //        super();
 //        setHp(10);
 //        setDamage(5);
-        this.hp = 10;
+        this.hp = 30;
         this.damage = 5;
 
     }

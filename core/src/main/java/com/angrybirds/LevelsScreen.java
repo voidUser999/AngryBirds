@@ -170,7 +170,7 @@ public class LevelsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
 
-                app.setScreen(app.lvl_1);
+                app.setScreen(app.level_1);
             }
         });
 

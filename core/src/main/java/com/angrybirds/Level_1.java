@@ -111,21 +111,21 @@ public class Level_1 implements Screen{
             player1 = createBox(110, 100, 70, 70, false, "thisRed1", 0.2f);
             player2 = createBox(80, 100, 70, 70, false, "thisRed2", 0.2f);
 
-            // Populate birdProp
+
             birdProp.put(player, new Prop1());
             birdProp.put(player1, new Prop2());
             birdProp.put(player2, new Prop3());
 
-            // Create platform
+
             platform = createBox(100, 40, 50, 30000, true, "data", -1f);
             platform1 = createBox(270,200,2,120,true , "data",-1f);
-            // Set up Contact Listener AFTER birdProp is populated
+
             contactListener = new MyContactListener(birdProp);
             world.setContactListener(contactListener);
 
             launched = false;
 
-            // Load the map
+
             if (map != null) {
                 map.dispose();
             }
@@ -140,27 +140,26 @@ public class Level_1 implements Screen{
             TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
         }
         else if (worldSaved && savedWorld != null  ) {
-            // Reuse the saved world
+
             this.world = savedWorld;
-            loadWorldState();  // Load the saved game state
+            loadWorldState();
         } else {
-            // Initialize the world
+
             world = new World(new Vector2(0, -9.8f), false);
 
-            // Initialize birdProp HashMap
+
             birdProp = new HashMap<>();
 
-            // Create players and assign properties
             player = createBox(140, 100, 70, 70, false, "thisRed0", 0.2f);
             player1 = createBox(110, 100, 70, 70, false, "thisRed1", 0.2f);
             player2 = createBox(80, 100, 70, 70, false, "thisRed2", 0.2f);
 
-            // Populate birdProp
+
             birdProp.put(player, new Prop1());
             birdProp.put(player1, new Prop2());
             birdProp.put(player2, new Prop3());
 
-            // Create platform
+
             platform = createBox(100, 40, 50, 30000, true, "data", -1f);
             platform1 = createBox(270,200,2,120,true , "data",-1f);
 
@@ -169,7 +168,7 @@ public class Level_1 implements Screen{
 
             launched = false;
 
-            // Load the map
+
             if (map != null) {
                 map.dispose();
             }
@@ -184,7 +183,7 @@ public class Level_1 implements Screen{
             TiledObjectUtil.parseTiledObjectLayer(map.getLayers().get("Object Layer 1").getObjects(), false);
         }
 
-        // Clear and reinitialize stages
+
         stage.clear();
         pauseStage.clear();
         endStage1.clear();
@@ -196,7 +195,7 @@ public class Level_1 implements Screen{
         isEndScreen = false;
         isPaused = false;
 
-        // Set the input processor
+
         Gdx.input.setInputProcessor(stage);
 
 
@@ -210,10 +209,6 @@ public class Level_1 implements Screen{
             world.destroyBody(body);
         }
     }
-//    private void saveWorldState() {
-//        worldSaved = true;
-//        savedWorld = this.world;
-//    }
 
     private void initButtons() {
         back = new ImageButton(new TextureRegionDrawable(tex));
@@ -228,7 +223,7 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = true;  // Pause the game
-                Gdx.input.setInputProcessor(pauseStage);  // Switch input to pause menu
+                Gdx.input.setInputProcessor(pauseStage);
             }
         });
     }
@@ -297,8 +292,11 @@ public class Level_1 implements Screen{
         sav_exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+
                 saveWorldState();
                 resetWorld = false;
+                isEndScreenL = false;
+                isEndScreenW = false;
                 app.setScreen(app.levelsScreen);
             }
         });
@@ -335,7 +333,13 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
-
+                clearWorld();
+                launched = false;
+                isEndScreen = false;
+                isEndScreenW = false;
+                isDestroyed = false;
+                turn = 0;
+                resetWorld = true;
                 app.setScreen(app.mainMenuScreen);
             }
         });
@@ -362,7 +366,7 @@ public class Level_1 implements Screen{
         endImage = new Image(new TextureRegionDrawable(end2Tex));
 
 
-        endImage.setPosition((float) angryBirds.V_WIDTH / 2 - endTex.getWidth() / 2, (float) angryBirds.V_HEIGHT / 2 - endTex.getHeight() / 2);
+        endImage.setPosition((float) angryBirds.V_WIDTH / 2 - end2Tex.getWidth() / 2, (float) angryBirds.V_HEIGHT / 2 - end2Tex.getHeight() / 2);
         endImage.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0, -20, 0.5f, Interpolation.pow5Out))));
 
         ImageButton sav_exitButton1 = new ImageButton(new TextureRegionDrawable(savexTex));
@@ -373,6 +377,8 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
+                isEndScreen = false;
+                isEndScreenL = false;
                 clearWorld();
                 launched = false;
                 isDestroyed = false;
@@ -396,39 +402,39 @@ public class Level_1 implements Screen{
         // Check if the game is paused
         if (!isPaused && !isEndScreen) {
             update(delta);
-            handleInput(); // Only update the world when not paused or in the end screen
+            handleInput();
         }
 
-        // Render the tiled map
+
         tmr.render();
 
-        // Render Box2D debug lines (optional, for debugging purposes)
+        // Render Box2D debug lines
       //  b2dr.render(world, app.camera.combined.scl(PPM));
 
-        // Begin sprite batch rendering for textures
+
         app.batch.begin();
 
-        // Draw the player textures
+
         app.batch.draw(redBird, player.getPosition().x * PPM - 45, player.getPosition().y * PPM - 40, 90, 90);
         app.batch.draw(yellowBird, player1.getPosition().x * PPM - 45, player1.getPosition().y * PPM - 40, 90, 90);
         app.batch.draw(blackBird, player2.getPosition().x * PPM - 45, player2.getPosition().y * PPM - 40, 90, 90);
 
-        // Draw textures for polygon bodies
+
         renderPolygonTextures();
 
-        // Draw objects from TiledObjectUtil
+
         TiledObjectUtil.renderAllBodies(app.batch);
 
         app.batch.end();
 
-        // Draw the slingshot line if dragging
+
         if (isDragging) {
             app.batch.begin();
             drawSlingLine(slingStart, slingEnd); // Draw a line for the slingshot
             app.batch.end();
         }
 
-        // Handle UI rendering
+
         if (isPaused) {
             Gdx.input.setInputProcessor(pauseStage);
             pauseStage.act(delta);
@@ -447,7 +453,10 @@ public class Level_1 implements Screen{
             stage.draw();
         }
 
-        // Check if all birds are destroyed
+        if (turn<3){
+            checkWin();
+        }
+
         if (turn == 3) {
             checkWinOrLose();
         }
@@ -458,23 +467,20 @@ public class Level_1 implements Screen{
         world.getBodies(bodies);
 
         for (Body body : bodies) {
-            // Retrieve the texture path from TiledObjectUtil
+
             String texturePath = TiledObjectUtil.getBodyTextures().get(body);
 
             if (texturePath != null) {
                 Texture texture = getTexture(texturePath); // Load texture from the cache
                 TextureRegion textureRegion = new TextureRegion(texture);
-                // Get body's position and rotation
+
                 Vector2 position = body.getPosition();
                 float angle = (float) Math.toDegrees(body.getAngle());
 
-//                // Calculate width and height based on your polygon body size
-//                float width = 50;  // Adjust to fit your body size
-//                float height = 50; // Adjust to fit your body size
                 float x = (position.x * PPM) - (texture.getWidth() / 2f);
                 float y = (position.y * PPM) - (texture.getHeight() / 2f);
 
-                // Draw the texture
+
                 app.batch.draw(
                     textureRegion,
                     x, y,
@@ -492,8 +498,7 @@ public class Level_1 implements Screen{
     private final float MOMENTUM_TIMEOUT = 1.5f;
     public void update(float delta){
         stage.act(delta);
-        world.step(1/60f , 6 , 2);
-        // Process pending body destructions
+        world.step(1/120f , 6 , 2);
         if (contactListener instanceof MyContactListener) {
             ((MyContactListener) contactListener).processPendingDestructions(world);
         }
@@ -506,25 +511,22 @@ public class Level_1 implements Screen{
         else if(turn == 1){
             PP = player1;
         }
-        // Check if the bird has lost momentum
-        if (launched && PP != null) { // Ensure the bird is launched
+
+        if (launched && PP != null) {
             Vector2 velocity = PP.getLinearVelocity();
-            float speed = velocity.len(); // Total velocity magnitude
+            float speed = velocity.len();
 
             if (speed < MOMENTUM_THRESHOLD) {
-                // Bird has low momentum
+
                 if (!isLowMomentum) {
                     isLowMomentum = true;
-                    startMomentumTimer(); // Start the timer when speed falls below threshold
+                    startMomentumTimer();
                 }
             } else {
-                // Reset the low momentum state if speed exceeds threshold
+
                 isLowMomentum = false;
             }
         }
-
-
-        //camera moves with player
 
         cameraUpdate(delta);
         tmr.setView(app.camera);
@@ -532,17 +534,17 @@ public class Level_1 implements Screen{
     }
      boolean launched = false;
 
-    // Add variables for slingshot mechanics
-    private boolean isDragging = false;
-    private Vector2 slingStart = new Vector2(); // Starting position of the bird
-    private Vector2 slingEnd = new Vector2();   // End position after drag
-    private float maxDragDistance = 100f;// To check if the bird is being dragged
-    private Vector2 visualBirdPosition = new Vector2(); // For smooth dragging visuals
-    private int trajectoryPoints = 20; // Number of trajectory points to draw
-    private float trajectoryTimeStep = 0.1f; // Time step between trajectory points
 
-    private float timer = 0; // Timer to count down after launch
-    private boolean checkWinScheduled = false; // Flag to ensure checkWin is called after the delay
+    private boolean isDragging = false;
+    private Vector2 slingStart = new Vector2();
+    private Vector2 slingEnd = new Vector2();
+    private float maxDragDistance = 100f;
+    private Vector2 visualBirdPosition = new Vector2();
+    private int trajectoryPoints = 20;
+    private float trajectoryTimeStep = 0.1f;
+
+    private float timer = 0;
+    private boolean checkWinScheduled = false;
 
     private void handleInput() {
 
@@ -557,9 +559,9 @@ public class Level_1 implements Screen{
             PP = player1;
         }
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { // If left mouse button is pressed
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             Vector3 touchPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            app.camera.unproject(touchPos); // Convert to world coordinates
+            app.camera.unproject(touchPos);
 
             Vector2 touchPoint = new Vector2(touchPos.x, touchPos.y);
 
@@ -571,57 +573,56 @@ public class Level_1 implements Screen{
             if (isDragging) {
                 slingEnd.set(touchPoint);
 
-                // Limit drag distance
+
                 if (slingEnd.dst(slingStart) > maxDragDistance) {
                     slingEnd.set(slingStart.cpy().add(slingEnd.cpy().sub(slingStart).nor().scl(maxDragDistance)));
                 }
 
-                // Update visual bird position for dragging effect
+
                 visualBirdPosition.set(slingEnd.cpy());
             }
-        } else if (isDragging) { // Mouse released
+        } else if (isDragging) {
             isDragging = false;
             launched = true;
 
-            // Calculate launch force
+
             Vector2 launchForce = slingStart.cpy().sub(slingEnd).scl(10f); // Scale for desired launch power
             PP.setLinearVelocity(launchForce.scl(1 / PPM));
 
-            // Start the 3-second timer
+
             timer = 3f;
-            checkWinScheduled = true; // Flag to call checkWin after the timer expires
+            checkWinScheduled = true;
         }
 
-        // Update the timer (this should be called in the render or update method)
+
         if (timer > 0) {
-            timer -= Gdx.graphics.getDeltaTime();  // Decrease timer by frame delta time
+            timer -= Gdx.graphics.getDeltaTime();
         }
 
-        // If timer reaches zero, check for win
+
         if (timer <= 0 && checkWinScheduled) {
-            checkWin(); // Call the checkWin method
-            checkWinScheduled = false; // Reset flag to prevent repeated calls
+            checkWin();
+            checkWinScheduled = false;
         }
     }
 
 
-    // Render slingshot line and trajectory
+
     private void drawSlingLine(Vector2 start, Vector2 end) {
-        // Draw slingshot line
+
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.line(start.x, start.y, end.x, end.y);
         shapeRenderer.end();
 
-        // Draw trajectory dots
         drawTrajectoryDots(start, end);
     }
 
     private void drawTrajectoryDots(Vector2 start, Vector2 end) {
-        Vector2 launchForce = start.cpy().sub(end).scl(10f); // Scale for trajectory simulation
+        Vector2 launchForce = start.cpy().sub(end).scl(10f);
         Vector2 position = PP.getPosition().cpy();
-        Vector2 velocity = launchForce.scl(1 / PPM); // Convert to world scale
-        float gravity = world.getGravity().y; // Use Box2D gravity
+        Vector2 velocity = launchForce.scl(1 / PPM);
+        float gravity = world.getGravity().y;
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.PINK);
@@ -629,11 +630,11 @@ public class Level_1 implements Screen{
         for (int i = 0; i < trajectoryPoints; i++) {
             float time = i * trajectoryTimeStep;
 
-            // Calculate trajectory point
+
             float x = position.x + velocity.x * time;
             float y = position.y + velocity.y * time + 0.5f * gravity * time * time;
 
-            // Draw point
+
             shapeRenderer.circle(x * PPM, y * PPM, 3); // Scale to PPM
         }
 
@@ -646,21 +647,24 @@ public class Level_1 implements Screen{
         System.out.println("Destroying " + turn + isDestroyed);
         if(turn == 0){
             PP = player;
+            x=48;
         }
         else if(turn == 2 && launched){
             PP = player2;
             isDestroyed = false;
+            x=54;
         }
         else if(turn == 1 && launched){
             PP = player1;
             isDestroyed = false;
+            x=51;
         }
         if (!isDestroyed) {
 
-            // Move the bird to a safe position (e.g., above the map)
-            PP.setTransform(x, y , 0); // Example: move to (0, 100) above the map
 
-            // Optionally set its velocity to zero
+            PP.setTransform(x, y , 0);
+
+
             PP.setLinearVelocity(0, 0);
             PP.setAngularVelocity(0);
             PP.setType(BodyDef.BodyType.StaticBody);
@@ -668,7 +672,7 @@ public class Level_1 implements Screen{
             System.out.println("Bird moved above the map due to low momentum.");
             turn++;
             launched = false;
-            x=x+3;
+
             if(turn == 1){
                 player1.setTransform(270 / PPM , 300 / PPM, player1.getAngle());
             }
@@ -715,7 +719,7 @@ public class Level_1 implements Screen{
     @Override
     public void dispose() {
         System.out.println("Disposing ");
-        if (!isPaused) { // Only dispose if not paused
+        if (!isPaused) {
             clearWorld();
             world.dispose();
             worldSaved = false;
@@ -753,48 +757,48 @@ public class Level_1 implements Screen{
         Body pBody;
         BodyDef def = new BodyDef();
 
-        // Set body type based on whether it is static or dynamic
+
         def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
         def.position.set(x / PPM, y / PPM);
         def.fixedRotation = true; // Prevents the body from rotating
 
-        // Create the body in the world
+
         pBody = world.createBody(def);
 
-        // Define shape and set it as a box
+
         PolygonShape shape = new PolygonShape();
         shape.setAsBox((float) width / 2 / PPM, (float) height / 2 / PPM);
 
-        // Create a fixture definition to apply properties
+
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1.0f; // Adjust density for mass
-        fixtureDef.friction = 0.5f; // Adjust friction for sliding interactions
-        fixtureDef.restitution = restitute; // Adjust restitution for bounciness
+        fixtureDef.density = 1.0f;
+        fixtureDef.friction = 0.5f;
+        fixtureDef.restitution = restitute;
 
 
-        // Attach the fixture to the body and set user data
+
         pBody.createFixture(fixtureDef).setUserData(temp);
 
-        // Dispose of the shape to free memory
+
         shape.dispose();
 
         return pBody;
     }
     private void startMomentumTimer() {
-        // Schedule the destruction of the bird after 3 seconds of low momentum
+
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
 
-                destroyBird(); // Destroy the bird after 3 seconds
+                destroyBird();
             }
-        }, MOMENTUM_TIMEOUT); // Timeout after 3 seconds
+        }, MOMENTUM_TIMEOUT);
     }
     private void checkWin() {
         boolean allEnemiesDestroyed = true;
 
-        // Check enemy0Prop for any remaining HP
+
         for (enemy0 enemy : TiledObjectUtil.getEnemy0Prop().values()) {
             if (enemy.getHp() > 0) {
                 allEnemiesDestroyed = false;
@@ -802,7 +806,7 @@ public class Level_1 implements Screen{
             }
         }
 
-        // Check enemy1Prop for any remaining HP (if enemy0Prop passed)
+
         if (allEnemiesDestroyed) {
             for (enemy1 enemy : TiledObjectUtil.getEnemy1Prop().values()) {
                 if (enemy.getHp() > 0) {
@@ -812,7 +816,7 @@ public class Level_1 implements Screen{
             }
         }
 
-        // Trigger win or lose screen
+
         if (allEnemiesDestroyed) {
             triggerWinScreen();
         }
@@ -820,7 +824,7 @@ public class Level_1 implements Screen{
     private void checkWinOrLose() {
         boolean allEnemiesDestroyed = true;
 
-        // Check enemy0Prop for any remaining HP
+
         for (enemy0 enemy : TiledObjectUtil.getEnemy0Prop().values()) {
             if (enemy.getHp() > 0) {
                 allEnemiesDestroyed = false;
@@ -828,7 +832,7 @@ public class Level_1 implements Screen{
             }
         }
 
-        // Check enemy1Prop for any remaining HP (if enemy0Prop passed)
+
         if (allEnemiesDestroyed) {
             for (enemy1 enemy : TiledObjectUtil.getEnemy1Prop().values()) {
                 if (enemy.getHp() > 0) {
@@ -838,7 +842,7 @@ public class Level_1 implements Screen{
             }
         }
 
-        // Trigger win or lose screen
+
         if (allEnemiesDestroyed) {
 
             triggerWinScreen();
@@ -852,7 +856,7 @@ public class Level_1 implements Screen{
         isEndScreen = true;
         isEndScreenW = true;
 
-        // Set up the win screen elements or switch to a win screen
+
         System.out.println("You Win!");
 
     }
@@ -861,12 +865,12 @@ public class Level_1 implements Screen{
         isEndScreen = true;
         isEndScreenL = true;
 
-        // Set up the lose screen elements or switch to a lose screen
+
         System.out.println("You Lose!");
 
     }
 
-    //getting the ppm value * it if setting the ppm value divide it
+
     private void saveWorldState() {
         worldSaved = true;
         savedWorld = this.world;
@@ -906,12 +910,12 @@ public class Level_1 implements Screen{
                     polygonBodyDataList.add(new PolygonBodyData(vertices, textureName, x, y, angle, velocityX, velocityY));
                 }
             } else {
-                // Handle rectangular or other bodies
+
                 bodyDataList.add(new BodyData(x, y, angle, velocityX, velocityY, type));
             }
         }
 
-        // Create a GameState object and serialize it
+
         GameState gameState = new GameState(bodyDataList, polygonBodyDataList);
 
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("game_save.dat"))) {
@@ -923,11 +927,11 @@ public class Level_1 implements Screen{
     }
 
     private String getBodyType(Body body) {
-        // Check if user data is assigned to the body
+
         Object userData = body.getUserData();
 
         if (userData != null) {
-            // If userData is available, return it as a string
+
             return userData.toString();
         } else if (body == platform) {
             return "platform";
@@ -993,7 +997,7 @@ public class Level_1 implements Screen{
 
 
     private void createBodyFromData(BodyData bodyData) {
-        // Define the body (e.g., a dynamic body, static body, etc.)
+
         BodyDef def = new BodyDef();
         def.position.set(bodyData.getX(), bodyData.getY());
         def.angle = bodyData.getAngle();
@@ -1001,12 +1005,12 @@ public class Level_1 implements Screen{
             def.type = BodyDef.BodyType.StaticBody;
             Body body = world.createBody(def);
 
-            // Set the body type and velocity based on the saved data
+
             body.setLinearVelocity(bodyData.getVelocityX(), bodyData.getVelocityY());
 
-            // Recreate the body's fixtures (you need to know the shape and type of each body)
+
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(3000, 1);  // Example, you might need to adjust this based on your object type
+            shape.setAsBox(3000, 1);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -1021,12 +1025,12 @@ public class Level_1 implements Screen{
             def.type = BodyDef.BodyType.DynamicBody;
             Body body = world.createBody(def);
 
-            // Set the body type and velocity based on the saved data
+
             body.setLinearVelocity(bodyData.getVelocityX(), bodyData.getVelocityY());
 
-            // Recreate the body's fixtures (you need to know the shape and type of each body)
+
             PolygonShape shape = new PolygonShape();
-            shape.setAsBox(1, 1);  // Example, you might need to adjust this based on your object type
+            shape.setAsBox(1, 1);
 
             FixtureDef fixtureDef = new FixtureDef();
             fixtureDef.shape = shape;
@@ -1040,23 +1044,6 @@ public class Level_1 implements Screen{
 
         }
 
-//        // Create a body
-//        Body body = world.createBody(def);
-//
-//        // Set the body type and velocity based on the saved data
-//        body.setLinearVelocity(bodyData.getVelocityX(), bodyData.getVelocityY());
-//
-//        // Recreate the body's fixtures (you need to know the shape and type of each body)
-//        PolygonShape shape = new PolygonShape();
-//        shape.setAsBox(1, 1);  // Example, you might need to adjust this based on your object type
-//
-//        FixtureDef fixtureDef = new FixtureDef();
-//        fixtureDef.shape = shape;
-//        fixtureDef.density = 1.0f;
-//        fixtureDef.friction = 0.5f;
-//
-//        body.createFixture(fixtureDef);
-//        shape.dispose();
     }
 
 }
