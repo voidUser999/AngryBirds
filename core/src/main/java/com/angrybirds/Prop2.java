@@ -5,8 +5,8 @@ public class Prop2 extends Prop {
     private  double damage;
 
     Prop2() {
-        this.hp = 5;
-        this.damage = 2;
+        this.hp = 15;
+        this.damage = 5;
 
     }
 

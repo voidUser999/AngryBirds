@@ -9,7 +9,7 @@ public class Prop3 extends Prop {
 //        setHp(10);
 //        setDamage(5);
         this.hp = 30;
-        this.damage = 5;
+        this.damage = 3;
 
     }
 

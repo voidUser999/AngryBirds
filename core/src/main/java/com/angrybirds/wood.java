@@ -4,7 +4,7 @@ public class wood {
     float hp;
 
     public wood() {
-        this.hp = 0.7F;
+        this.hp = 2F;
     }
 
     public float getHp() {

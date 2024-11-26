@@ -20,8 +20,7 @@ import static utils.Constants.PPM;
 
 public class TiledObjectUtil implements Serializable {
 
-  //  @Serial
-   // private static final long serialVersionUID = 1L;  // For versioning the serialized data
+
     private static World world;
     private static  Map<Body, String> bodyTextures = new HashMap<>();
     private static  Map<String, Texture> textureCache = new HashMap<>();
@@ -32,9 +31,8 @@ public class TiledObjectUtil implements Serializable {
     static HashMap<Body, glass> glassProp = new HashMap<>();
     static HashMap<Body, enemy0> enemy0Prop = new HashMap<>();
     static HashMap<Body, enemy1> enemy1Prop = new HashMap<>();
+    static HashMap<Body, enemy2> enemy2Prop = new HashMap<>();
 
-    // Add additional fields for serializing positions
-   // private static Map<Body, BodyData> bodyDataMap = new HashMap<>();
 
     public static void initialize(World worldInstance) {
         world = worldInstance;
@@ -47,28 +45,28 @@ public class TiledObjectUtil implements Serializable {
             PolygonMapObject polyObj = (PolygonMapObject) object;
             float[] vertices = polyObj.getPolygon().getTransformedVertices();
 
-            // Scale vertices for Box2D (convert from pixels to meters)
+
             for (int i = 0; i < vertices.length; i++) {
                 vertices[i] = vertices[i] / PPM;
             }
 
-            // Calculate centroid of the polygon for accurate body placement
+
             Vector2 centroid = calculateCentroid(vertices);
 
-            // Offset vertices relative to the centroid
+
             for (int i = 0; i < vertices.length; i += 2) {
                 vertices[i] -= centroid.x;
                 vertices[i + 1] -= centroid.y;
             }
 
-            // Create Box2D body at the centroid
+
 
 
             String type = (String) polyObj.getProperties().get("Type");
             System.out.println("body type " + type);
             Body body = createPolygon(vertices, centroid, isStatic , type);
 
-            // Retrieve the texture name and associate it with the body
+
             String textureName = (String) polyObj.getProperties().get("texture");
             if (textureName != null) {
                 bodyTextures.put(body, textureName);
@@ -125,10 +123,11 @@ public class TiledObjectUtil implements Serializable {
             enemy1Prop.put(body, pig1);
             body.createFixture(fixtureDef).setUserData("pig1");
         }
-//        else {
-//            // Default fixture for untyped objects
-//            body.createFixture(fixtureDef).setUserData("userdata");
-//        }
+        else if("pig2".equalsIgnoreCase(type)) {
+            enemy2 pig2 = new enemy2();
+            enemy2Prop.put(body, pig2);
+            body.createFixture(fixtureDef).setUserData("pig2");
+        }
 
         shape.dispose();
 
@@ -169,15 +168,15 @@ public class TiledObjectUtil implements Serializable {
             Texture texture = (Texture) userData;
             TextureRegion textureRegion = new TextureRegion(texture);
 
-            // Get body position and angle
+
             Vector2 position = body.getPosition();
             float angle = (float) Math.toDegrees(body.getAngle());
 
-            // Convert position to pixel coordinates
+
             float x = (position.x * PPM) - (texture.getWidth() / 2f);
             float y = (position.y * PPM) - (texture.getHeight() / 2f);
 
-            // Draw the texture with rotation
+
             batch.draw(
                 textureRegion,
                 x, y,
@@ -249,5 +248,13 @@ public class TiledObjectUtil implements Serializable {
 
     public static void setTextureCache(Map<String, Texture> textureCache) {
         TiledObjectUtil.textureCache = textureCache;
+    }
+
+    public static HashMap<Body, enemy2> getEnemy2Prop() {
+        return enemy2Prop;
+    }
+
+    public static void setEnemy2Prop(HashMap<Body, enemy2> enemy2Prop) {
+        TiledObjectUtil.enemy2Prop = enemy2Prop;
     }
 }

@@ -132,6 +132,28 @@ public class MyContactListener implements ContactListener {
             handleCollision(fb.getBody(), fa.getBody() ,"pig1" );
         }
 
+        //pig2
+
+        if ("thisRed0".equals(fa.getUserData()) && "pig2".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig2");
+
+        } else if ("pig2".equals(fa.getUserData()) && "thisRed0".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"pig2");
+        }
+        else if ("thisRed1".equals(fa.getUserData()) && "pig2".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig2");
+
+        } else if ("pig2".equals(fa.getUserData()) && "thisRed1".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody(),"pig2");
+        }
+        else if ("thisRed2".equals(fa.getUserData()) && "pig2".equals(fb.getUserData())) {
+            handleCollision(fa.getBody(), fb.getBody(),"pig2");
+
+        }
+        else if ("pig2".equals(fa.getUserData()) && "thisRed2".equals(fb.getUserData())) {
+            handleCollision(fb.getBody(), fa.getBody() ,"pig2" );
+        }
+
     }
 
     @Override
@@ -149,16 +171,16 @@ public class MyContactListener implements ContactListener {
         System.out.println("Other Body: " + otherBody);
         System.out.println("User Data (ud): " + ud);
 
-        // Retrieve current health from the HashMap
+
         float structHp = 5;
         float playerHealth = birdProp.get(playerBody).getHp();
         System.out.println("Initial Player Health: " + playerHealth);
 
-        // Calculate damage
+
         float damage = (float) (1f * birdProp.get(playerBody).getDamage());
         System.out.println("Calculated Damage: " + damage);
 
-        // Determine structure health based on user data
+
         if ("woodblock".equals(ud)) {
             structHp = TiledObjectUtil.getWoodProp().get(otherBody).getHp();
         } else if ("stoneblock".equals(ud)) {
@@ -172,6 +194,12 @@ public class MyContactListener implements ContactListener {
             structHp = TiledObjectUtil.getEnemy1Prop().get(otherBody).getHp();
 
         }
+        else if ("pig2".equals(ud)) {
+            structHp = TiledObjectUtil.getEnemy2Prop().get(otherBody).getHp();
+
+        }
+
+
 
         System.out.println("Structure Health Before Damage: " + structHp);
 
@@ -201,14 +229,19 @@ public class MyContactListener implements ContactListener {
             System.out.println("Updated Pig1 Health: " + structHp);
 
         }
+        else if ("pig2".equals(ud)) {
+            TiledObjectUtil.getEnemy2Prop().get(otherBody).setHp((int) structHp);
+            System.out.println("Updated Pig2 Health: " + structHp);
 
-        // If health is below zero, player can no longer destroy objects
+        }
+
+
         if (playerHealth <= 0) {
             System.out.println("Player is too weak to destroy objects!");
             return;
         }
 
-        // If structure health is below zero, mark it for destruction
+
         if (structHp <= 0) {
             System.out.println("Structure is destroyed! Marking for destruction...");
             markForDestruction(otherBody);

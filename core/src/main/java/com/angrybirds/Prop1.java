@@ -6,7 +6,7 @@ public class Prop1 extends Prop{
 
     Prop1() {
         this.hp = 20;
-        this.damage = 2;
+        this.damage = 4;
 
     }
 
