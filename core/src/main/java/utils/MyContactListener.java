@@ -1,6 +1,7 @@
 package utils;
 
 import com.angrybirds.Prop;
+import com.angrybirds.Prop_EX;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
@@ -154,7 +155,62 @@ public class MyContactListener implements ContactListener {
             handleCollision(fb.getBody(), fa.getBody() ,"pig2" );
         }
 
+        if (isStructure(fa.getUserData()) && isStructure(fb.getUserData())) {
+            handleStructureCollision(fa, fb);
+        }
+
+
     }
+    private boolean isStructure(Object userData) {
+        return "woodblock".equals(userData) || "stoneblock".equals(userData) || "glassblock".equals(userData);
+    }
+
+    private void handleStructureCollision(Fixture bodyA, Fixture bodyB) {
+        float relativeVelocity = bodyA.getBody().getLinearVelocity().dst(bodyB.getBody().getLinearVelocity());
+        float damageThreshold = 5.0f;
+
+        System.out.println("Handling Structure-to-Structure Collision...");
+        System.out.println("Relative Velocity: " + relativeVelocity);
+
+        if (relativeVelocity > damageThreshold) {
+            float damage = relativeVelocity * 0.5f; // Scale damage with velocity
+            System.out.println("Applying Damage: " + damage);
+
+            applyDamageToStructure(bodyA, damage);
+            applyDamageToStructure(bodyB, damage);
+        }
+    }
+    private void applyDamageToStructure(Fixture structureBody, float damage) {
+        Prop_EX structureProp = getStructureProp(structureBody);
+        if (structureProp != null) {
+            float structHp = structureProp.getHp();
+            System.out.println("Structure HP Before Damage: " + structHp);
+
+            structHp -= damage;
+
+            System.out.println("Damage Applied: " + damage);
+            System.out.println("Structure HP After Damage: " + structHp);
+
+            structureProp.setHp((int) structHp);
+
+            if (structHp <= 0) {
+                System.out.println("Structure is destroyed! Marking for destruction...");
+                markForDestruction(structureBody.getBody());
+            }
+        }
+    }
+    private Prop_EX getStructureProp(Fixture structureBody) {
+        Object userData = structureBody.getUserData();
+        if ("woodblock".equals(userData)) {
+            return TiledObjectUtil.getWoodProp().get(structureBody.getBody());
+        } else if ("stoneblock".equals(userData)) {
+            return TiledObjectUtil.getStoneProp().get(structureBody.getBody());
+        } else if ("glassblock".equals(userData)) {
+            return TiledObjectUtil.getGlassProp().get(structureBody.getBody());
+        }
+        return null;
+    }
+
 
     @Override
     public void endContact(Contact contact) {}

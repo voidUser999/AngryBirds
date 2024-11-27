@@ -1,10 +1,15 @@
 package com.angrybirds;
 
-public class wood {
+public class wood extends Prop_EX {
     float hp;
 
     public wood() {
-        this.hp = 2F;
+        this.hp = 2;
+    }
+
+    @Override
+    public void interact() {
+
     }
 
     public float getHp() {

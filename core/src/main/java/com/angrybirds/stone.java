@@ -1,10 +1,17 @@
 package com.angrybirds;
 
-public class stone {
+import com.badlogic.gdx.scenes.scene2d.Actor;
+
+public class stone extends Prop_EX {
     float hp;
 
     public stone() {
         this.hp = 4;
+    }
+
+    @Override
+    public void interact() {
+
     }
 
     public float getHp() {
