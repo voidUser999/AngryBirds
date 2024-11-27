@@ -5,7 +5,7 @@ public class enemy1 extends Prop{
     private  double damage;
 
     public enemy1() {
-        this.hp = 2;
+        this.hp = 5;
         this.damage = 1;
 
     }

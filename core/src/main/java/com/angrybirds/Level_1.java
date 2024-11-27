@@ -143,7 +143,12 @@ public class Level_1 implements Screen{
         else if (worldSaved && savedWorld != null  ) {
 
             this.world = savedWorld;
+            isPaused = false;
+            isEndScreen = false;
+            isEndScreenL = false;
+            isEndScreenW = false;
             loadWorldState();
+
         } else {
 
             world = new World(new Vector2(0, -9.8f), false);
@@ -339,6 +344,7 @@ public class Level_1 implements Screen{
                 launched = false;
                 isEndScreen = false;
                 isEndScreenW = false;
+                isEndScreenL = false;
                 isDestroyed = false;
                 turn = 0;
                 resetWorld = true;
@@ -381,8 +387,10 @@ public class Level_1 implements Screen{
                 isPaused = false;
                 isEndScreen = false;
                 isEndScreenL = false;
+                isEndScreenW = false;
                 clearWorld();
                 launched = false;
+
                 isDestroyed = false;
                 turn = 0;
                 resetWorld = true;
@@ -455,13 +463,12 @@ public class Level_1 implements Screen{
             stage.draw();
         }
 
-        if (turn<3){
+        if (turn < 3) {
             checkWin();
-        }
-
-        if (turn == 3) {
+        } else {
             checkWinOrLose();
         }
+
     }
 
     private void renderPolygonTextures() {
@@ -597,7 +604,7 @@ public class Level_1 implements Screen{
         }
 
          if (launched && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
-        // Trigger power based on the current player
+
         if (turn == 0) {
             activateStraightDown(PP);
         } else if (turn == 1) {
@@ -733,6 +740,8 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             System.out.println("DONE");
         }
     }
+
+
 
 
     private void cameraUpdate(float delta) {
@@ -883,14 +892,12 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
     private void checkWinOrLose() {
         boolean allEnemiesDestroyed = true;
 
-
         for (enemy0 enemy : TiledObjectUtil.getEnemy0Prop().values()) {
             if (enemy.getHp() > 0) {
                 allEnemiesDestroyed = false;
                 break;
             }
         }
-
 
         if (allEnemiesDestroyed) {
             for (enemy1 enemy : TiledObjectUtil.getEnemy1Prop().values()) {
@@ -900,6 +907,7 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
                 }
             }
         }
+
         if (allEnemiesDestroyed) {
             for (enemy2 enemy : TiledObjectUtil.getEnemy2Prop().values()) {
                 if (enemy.getHp() > 0) {
@@ -909,33 +917,50 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             }
         }
 
-
-
         if (allEnemiesDestroyed) {
-
             triggerWinScreen();
         } else {
-
             triggerLoseScreen();
+            System.out.println("Player lost! Printing all remaining enemy health points:");
+            printAllEnemyHp();
         }
     }
 
+    private void printAllEnemyHp() {
+        System.out.println("Enemy0 HashMap (HP values):");
+        TiledObjectUtil.getEnemy0Prop().forEach((body, enemy) ->
+            System.out.println("Body: " + body + ", HP: " + enemy.getHp())
+        );
+
+        System.out.println("Enemy1 HashMap (HP values):");
+        TiledObjectUtil.getEnemy1Prop().forEach((body, enemy) ->
+            System.out.println("Body: " + body + ", HP: " + enemy.getHp())
+        );
+
+        System.out.println("Enemy2 HashMap (HP values):");
+        TiledObjectUtil.getEnemy2Prop().forEach((body, enemy) ->
+            System.out.println("Body: " + body + ", HP: " + enemy.getHp())
+        );
+    }
+
+
     private void triggerWinScreen() {
-        isEndScreen = true;
-        isEndScreenW = true;
-
-
-        System.out.println("You Win!");
-
+        if (!isEndScreen) { // Prevent duplicate triggers
+            isEndScreen = true;
+            isEndScreenW = true;
+            System.out.println("You Win!");
+            TiledObjectUtil.clearAllHashMaps();
+        }
     }
 
     private void triggerLoseScreen() {
-        isEndScreen = true;
-        isEndScreenL = true;
+        if (!isEndScreen) {
+            isEndScreen = true;
+            isEndScreenL = true;
 
-
-        System.out.println("You Lose!");
-
+            TiledObjectUtil.clearAllHashMaps();
+            System.out.println("You Lose!");
+        }
     }
 
 

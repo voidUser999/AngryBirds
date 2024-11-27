@@ -100,15 +100,15 @@ public class TiledObjectUtil implements Serializable {
 
 
         if ("woodblock".equalsIgnoreCase(type)) {
-            wood woodBlock = new wood(); // Create wood instance
+            wood woodBlock = new wood();
             woodProp.put(body, woodBlock);
             body.createFixture(fixtureDef).setUserData("woodblock");
         } else if ("stoneblock".equalsIgnoreCase(type)) {
-            stone stoneBlock = new stone(); // Create stone instance
+            stone stoneBlock = new stone();
             stoneProp.put(body, stoneBlock);
             body.createFixture(fixtureDef).setUserData("stoneblock");
         } else if ("glassblock".equalsIgnoreCase(type)) {
-            glass glassBlock = new glass(); // Create glass instance
+            glass glassBlock = new glass();
             glassProp.put(body, glassBlock);
             body.createFixture(fixtureDef).setUserData("glassblock");
         }
@@ -116,17 +116,20 @@ public class TiledObjectUtil implements Serializable {
             enemy0 pig0 = new enemy0();
             enemy0Prop.put(body, pig0);
             body.createFixture(fixtureDef).setUserData("pig0");
+            System.out.println("DUMB");
 
         }
         else if("pig1".equalsIgnoreCase(type)) {
             enemy1 pig1 = new enemy1();
             enemy1Prop.put(body, pig1);
             body.createFixture(fixtureDef).setUserData("pig1");
+            System.out.println("DUMB");
         }
         else if("pig2".equalsIgnoreCase(type)) {
             enemy2 pig2 = new enemy2();
             enemy2Prop.put(body, pig2);
             body.createFixture(fixtureDef).setUserData("pig2");
+            System.out.println("DUMB");
         }
 
         shape.dispose();
@@ -256,5 +259,17 @@ public class TiledObjectUtil implements Serializable {
 
     public static void setEnemy2Prop(HashMap<Body, enemy2> enemy2Prop) {
         TiledObjectUtil.enemy2Prop = enemy2Prop;
+    }
+    public static void clearAllHashMaps() {
+        System.out.println("Clearing all enemy HashMaps...");
+
+        TiledObjectUtil.getEnemy0Prop().clear();
+        System.out.println("Enemy0 HashMap cleared.");
+
+        TiledObjectUtil.getEnemy1Prop().clear();
+        System.out.println("Enemy1 HashMap cleared.");
+
+        TiledObjectUtil.getEnemy2Prop().clear();
+        System.out.println("Enemy2 HashMap cleared.");
     }
 }

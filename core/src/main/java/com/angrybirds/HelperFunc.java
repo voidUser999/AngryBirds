@@ -1,18 +1,10 @@
 package com.angrybirds;
 public class HelperFunc {
-    public static int levelSelected (int SelectedLevel){
-        if(SelectedLevel == 1){
-            return 1;
-        }
-        else if(SelectedLevel == 2){
-            return 2;
-        }
-        else if(SelectedLevel == 3){
-            return 3;
-        }
-        else{
-            return 0;
-        }
+    public static boolean isStructure(Object userData) {
+        return "woodblock".equals(userData) || "stoneblock".equals(userData) || "glassblock".equals(userData);
+    }
+   public static boolean isPig(Object userData) {
+        return "pig0".equals(userData) || "pig1".equals(userData) || "pig2".equals(userData);
     }
 
 }

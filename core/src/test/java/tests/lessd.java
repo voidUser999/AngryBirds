@@ -41,7 +41,24 @@ public class lessd {
     }
 
     @Test
-    public void testButtonPlayExists() {
+    public void isStruct() {
+       boolean a = HelperFunc.isStructure("woodblock");
+       boolean b = HelperFunc.isStructure("stoneblock");
+       boolean c = HelperFunc.isStructure("rockblock");
+
+       Assertions.assertEquals(true , a , "Structure is woodblock");
+       Assertions.assertEquals(true, b, "Structure is stoneblock");
+       Assertions.assertEquals(false, c, "Structure is rockblock");
+    }
+
+    @Test void isPigg(){
+        boolean a = HelperFunc.isPig("pig0");
+        boolean b = HelperFunc.isPig("pig1");
+        boolean c = HelperFunc.isPig("pig6");
+
+        Assertions.assertEquals(true , a , "Structure is Pig0");
+        Assertions.assertEquals(true, b, "Structure is Pig1");
+        Assertions.assertEquals(false, c, "Structure is Pig2");
 
     }
 }

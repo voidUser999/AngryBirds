@@ -7,9 +7,12 @@ import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
 
+import static com.angrybirds.HelperFunc.isPig;
+import static com.angrybirds.HelperFunc.isStructure;
+
 public class MyContactListener implements ContactListener {
     private final Array<Body> bodiesToDestroy = new Array<>();
-    // Initialize player health
+
     HashMap<Body, Prop> birdProp;
 
     public MyContactListener(HashMap<Body, Prop> birdProp) {
@@ -167,12 +170,12 @@ public class MyContactListener implements ContactListener {
 
 
     }
-    private boolean isStructure(Object userData) {
-        return "woodblock".equals(userData) || "stoneblock".equals(userData) || "glassblock".equals(userData);
-    }
-    private boolean isPig(Object userData) {
-        return "pig0".equals(userData) || "pig1".equals(userData) || "pig2".equals(userData);
-    }
+//    private boolean isStructure(Object userData) {
+//        return "woodblock".equals(userData) || "stoneblock".equals(userData) || "glassblock".equals(userData);
+//    }
+//    private boolean isPig(Object userData) {
+//        return "pig0".equals(userData) || "pig1".equals(userData) || "pig2".equals(userData);
+//    }
 
 
     private void handleStructureCollision(Fixture bodyA, Fixture bodyB) {
@@ -222,17 +225,17 @@ public class MyContactListener implements ContactListener {
     }
     private void handlePigStructureCollision(Fixture pigFixture, Fixture structureFixture) {
         float relativeVelocity = pigFixture.getBody().getLinearVelocity().dst(structureFixture.getBody().getLinearVelocity());
-        float damageThreshold = 3.0f; // Adjust threshold for pigs to be lower or equal to structures
+        float damageThreshold = 3.0f;
 
         System.out.println("Handling Pig-to-Structure Collision...");
         System.out.println("Relative Velocity: " + relativeVelocity);
 
         if (relativeVelocity > damageThreshold) {
-            float damage = relativeVelocity * 0.4f; // Adjust damage scaling for pigs
+            float damage = relativeVelocity * 0.2f; // Adjust damage scaling for pigs
             System.out.println("Applying Damage: " + damage);
 
-            applyDamageToStructure(structureFixture, damage); // Reuse structure damage logic
-            applyDamageToPig(pigFixture, damage); // Apply damage to pig
+            applyDamageToStructure(structureFixture, damage);
+            applyDamageToPig(pigFixture, damage);
         }
     }
 
@@ -250,7 +253,22 @@ public class MyContactListener implements ContactListener {
             pigProp.setHp((int) pigHp);
 
             if (pigHp <= 0) {
-                System.out.println("Pig is destroyed! Marking for destruction...");
+                 if ("pig0".equals(pigBody.getUserData())) {
+                    TiledObjectUtil.getEnemy0Prop().get(pigBody.getBody()).setHp((int) pigHp);
+                    System.out.println("Updated Pig0 Health: " + pigHp);
+                    System.out.println("Pig0 is destroyed! Marking for destruction...");
+                } else if ("pig1".equals(pigBody.getUserData())) {
+                     TiledObjectUtil.getEnemy1Prop().get(pigBody.getBody()).setHp((int) pigHp);
+                     System.out.println("Updated Pig1 Health: " + pigHp);
+                     System.out.println("Pig1 is destroyed! Marking for destruction...");
+                }
+                else if ("pig2".equals(pigBody.getUserData())) {
+                     TiledObjectUtil.getEnemy2Prop().get(pigBody.getBody()).setHp((int) pigHp);
+                     System.out.println("Updated Pig2 Health: " + pigHp);
+                     System.out.println("Pig2 is destroyed! Marking for destruction...");
+
+                }
+
                 markForDestruction(pigBody.getBody());
             }
         }
@@ -278,18 +296,30 @@ public class MyContactListener implements ContactListener {
 
     @Override
     public void postSolve(Contact contact, ContactImpulse contactImpulse) {}
-
+    float structHp;
     private void handleCollision(Body playerBody, Body otherBody, String ud) {
         System.out.println("Handling collision...");
         System.out.println("Player Body: " + playerBody);
         System.out.println("Other Body: " + otherBody);
         System.out.println("User Data (ud): " + ud);
 
+        if(ud.equals("woodblock")){
+             structHp = TiledObjectUtil.getWoodProp().get(otherBody).getHp();
+        }
+        else if(ud.equals("stoneblock")){
+            structHp = TiledObjectUtil.getStoneProp().get(otherBody).getHp();
+        }
+        else if(ud.equals("glassblock")){
+            structHp = TiledObjectUtil.getGlassProp().get(otherBody).getHp();
+        }
 
-        float structHp = 5;
+
         float playerHealth = birdProp.get(playerBody).getHp();
         System.out.println("Initial Player Health: " + playerHealth);
-
+        if (playerHealth <= 0) {
+            System.out.println("Player is too weak to destroy objects!");
+            return;
+        }
 
         float damage = (float) (1f * birdProp.get(playerBody).getDamage());
         System.out.println("Calculated Damage: " + damage);
@@ -317,7 +347,7 @@ public class MyContactListener implements ContactListener {
 
         System.out.println("Structure Health Before Damage: " + structHp);
 
-        // Subtract damage from player health and structure health
+
         playerHealth -= damage;
         structHp -= (float) birdProp.get(playerBody).getDamage();
         System.out.println("Player Health After Damage: " + playerHealth);
@@ -349,19 +379,15 @@ public class MyContactListener implements ContactListener {
 
         }
 
-
-        if (playerHealth <= 0) {
-            System.out.println("Player is too weak to destroy objects!");
-            return;
-        }
-
-
         if (structHp <= 0) {
             System.out.println("Structure is destroyed! Marking for destruction...");
             markForDestruction(otherBody);
         } else {
             System.out.println("Structure is still intact.");
         }
+
+
+
     }
 
 
