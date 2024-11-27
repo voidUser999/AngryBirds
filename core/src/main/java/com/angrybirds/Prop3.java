@@ -4,7 +4,7 @@ public class Prop3 extends Prop {
     private  int hp;
     private  double damage;
 
-    Prop3() {
+    public Prop3() {
 //        super();
 //        setHp(10);
 //        setDamage(5);

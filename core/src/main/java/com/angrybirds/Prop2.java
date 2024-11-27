@@ -4,7 +4,7 @@ public class Prop2 extends Prop {
     private  int hp;
     private  double damage;
 
-    Prop2() {
+    public Prop2() {
         this.hp = 15;
         this.damage = 5;
 

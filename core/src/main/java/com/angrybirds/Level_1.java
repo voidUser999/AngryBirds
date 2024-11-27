@@ -432,7 +432,7 @@ public class Level_1 implements Screen{
 
         if (isDragging) {
             app.batch.begin();
-            drawSlingLine(slingStart, slingEnd); // Draw a line for the slingshot
+            drawSlingLine(slingStart, slingEnd);
             app.batch.end();
         }
 
@@ -866,6 +866,14 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
                 }
             }
         }
+        if (allEnemiesDestroyed) {
+            for (enemy2 enemy : TiledObjectUtil.getEnemy2Prop().values()) {
+                if (enemy.getHp() > 0) {
+                    allEnemiesDestroyed = false;
+                    break;
+                }
+            }
+        }
 
 
         if (allEnemiesDestroyed) {
@@ -892,6 +900,15 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
                 }
             }
         }
+        if (allEnemiesDestroyed) {
+            for (enemy2 enemy : TiledObjectUtil.getEnemy2Prop().values()) {
+                if (enemy.getHp() > 0) {
+                    allEnemiesDestroyed = false;
+                    break;
+                }
+            }
+        }
+
 
 
         if (allEnemiesDestroyed) {

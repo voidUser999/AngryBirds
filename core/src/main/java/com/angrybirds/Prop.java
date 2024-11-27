@@ -6,8 +6,8 @@ public abstract class Prop {
 
     // Constructor to initialize default values
     protected Prop() {
-        this.hp = 20;
-        this.damage = 3;
+        this.hp = 24;
+        this.damage = 5;
     }
 
     // Abstract method for additional behavior (to be implemented by subclasses)

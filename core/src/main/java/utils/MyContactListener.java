@@ -158,12 +158,22 @@ public class MyContactListener implements ContactListener {
         if (isStructure(fa.getUserData()) && isStructure(fb.getUserData())) {
             handleStructureCollision(fa, fb);
         }
+        if (isPig(fa.getUserData()) && isStructure(fb.getUserData())) {
+            handlePigStructureCollision(fa, fb);
+        } else if (isStructure(fa.getUserData()) && isPig(fb.getUserData())) {
+            handlePigStructureCollision(fb, fa);
+        }
+
 
 
     }
     private boolean isStructure(Object userData) {
         return "woodblock".equals(userData) || "stoneblock".equals(userData) || "glassblock".equals(userData);
     }
+    private boolean isPig(Object userData) {
+        return "pig0".equals(userData) || "pig1".equals(userData) || "pig2".equals(userData);
+    }
+
 
     private void handleStructureCollision(Fixture bodyA, Fixture bodyB) {
         float relativeVelocity = bodyA.getBody().getLinearVelocity().dst(bodyB.getBody().getLinearVelocity());
@@ -210,6 +220,54 @@ public class MyContactListener implements ContactListener {
         }
         return null;
     }
+    private void handlePigStructureCollision(Fixture pigFixture, Fixture structureFixture) {
+        float relativeVelocity = pigFixture.getBody().getLinearVelocity().dst(structureFixture.getBody().getLinearVelocity());
+        float damageThreshold = 3.0f; // Adjust threshold for pigs to be lower or equal to structures
+
+        System.out.println("Handling Pig-to-Structure Collision...");
+        System.out.println("Relative Velocity: " + relativeVelocity);
+
+        if (relativeVelocity > damageThreshold) {
+            float damage = relativeVelocity * 0.4f; // Adjust damage scaling for pigs
+            System.out.println("Applying Damage: " + damage);
+
+            applyDamageToStructure(structureFixture, damage); // Reuse structure damage logic
+            applyDamageToPig(pigFixture, damage); // Apply damage to pig
+        }
+    }
+
+    private void applyDamageToPig(Fixture pigBody, float damage) {
+        Prop pigProp = getPigProp(pigBody); // Fetch pig properties
+        if (pigProp != null) {
+            float pigHp = pigProp.getHp();
+            System.out.println("Pig HP Before Damage: " + pigHp);
+
+            pigHp -= damage;
+
+            System.out.println("Damage Applied to Pig: " + damage);
+            System.out.println("Pig HP After Damage: " + pigHp);
+
+            pigProp.setHp((int) pigHp);
+
+            if (pigHp <= 0) {
+                System.out.println("Pig is destroyed! Marking for destruction...");
+                markForDestruction(pigBody.getBody());
+            }
+        }
+    }
+
+    private Prop getPigProp(Fixture pigBody) {
+        Object userData = pigBody.getUserData();
+        if ("pig0".equals(userData)) {
+            return TiledObjectUtil.getEnemy0Prop().get(pigBody.getBody());
+        } else if ("pig1".equals(userData)) {
+            return TiledObjectUtil.getEnemy1Prop().get(pigBody.getBody());
+        } else if ("pig2".equals(userData)) {
+            return TiledObjectUtil.getEnemy2Prop().get(pigBody.getBody());
+        }
+        return null;
+    }
+
 
 
     @Override
@@ -265,7 +323,7 @@ public class MyContactListener implements ContactListener {
         System.out.println("Player Health After Damage: " + playerHealth);
         System.out.println("Structure Health After Damage: " + structHp);
 
-        // Update the health in the HashMap
+
         birdProp.get(playerBody).setHp((int) playerHealth);
         if ("woodblock".equals(ud)) {
             TiledObjectUtil.getWoodProp().get(otherBody).setHp((int) structHp);

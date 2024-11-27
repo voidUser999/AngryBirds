@@ -1,7 +1,22 @@
+plugins {
+  id 'java'
+}
+
+sourceSets {
+  main {
+    java.srcDirs = ["src/main/java/"]
+    resources.srcDirs = ["assets"]
+  }
+  test {
+    java.srcDirs = ["src/test/java/"]
+  }
+}
+
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 eclipse.project.name = appName + '-core'
 
 dependencies {
+  // Libraries
   api "com.badlogicgames.ashley:ashley:$ashleyVersion"
   api "com.badlogicgames.box2dlights:box2dlights:$box2dlightsVersion"
   api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
@@ -11,7 +26,27 @@ dependencies {
   api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
 
-  if(enableGraalNative == 'true') {
+  // Graal Native Support
+  if (enableGraalNative == 'true') {
     implementation "io.github.berstanio:gdx-svmhelper-annotations:$graalHelperVersion"
   }
+
+  // JUnit
+  testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+}
+
+compileJava {
+  options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+  options.encoding = 'UTF-8'
+}
+
+test {
+  useJUnitPlatform()
+  // Set JVM arguments (ensure this path resolves correctly)
+  jvmArgs += [
+    "-Djava.library.path=${configurations.testRuntimeClasspath.files.find { it.name.contains('natives-desktop') }}"
+  ]
 }

@@ -1,12 +1,17 @@
 package com.angrybirds;
 
-public class enemy2 {
+public class enemy2 extends Prop{
     private  int hp;
     private  double damage;
 
     public enemy2() {
         this.hp = 5;
         this.damage = 2;
+
+    }
+
+    @Override
+    public void interact() {
 
     }
 

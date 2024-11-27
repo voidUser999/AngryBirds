@@ -60,7 +60,7 @@ public class LoadingScreen implements Screen {
     private void update(float delta) {
         progress = MathUtils.lerp(progress, app.assets.getProgress() ,.1f);
         if(app.assets.update() && progress>=(app.assets.getProgress()-.1f)){
-            app.setScreen(app.level_1);
+            app.setScreen(app.splashScreen);
         }
 
 
