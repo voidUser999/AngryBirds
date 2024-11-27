@@ -46,7 +46,7 @@ public class Level_1 implements Screen{
     private final angryBirds app;
     private Stage stage;
     private Box2DDebugRenderer b2dr;
-    private Body player , platform , player1 , player2 , platform1;
+    private Body player , platform , player1 , player2 , platform1 , platform2;
     private OrthogonalTiledMapRenderer tmr;
     private TiledMap map;
     private Texture tex;
@@ -119,6 +119,7 @@ public class Level_1 implements Screen{
 
             platform = createBox(100, 40, 50, 30000, true, "data", -1f);
             platform1 = createBox(270,200,2,120,true , "data",-1f);
+            platform2 = createBox(1920,200,4000,2,true , "data",-1f);
 
             contactListener = new MyContactListener(birdProp);
             world.setContactListener(contactListener);
@@ -162,6 +163,7 @@ public class Level_1 implements Screen{
 
             platform = createBox(100, 40, 50, 30000, true, "data", -1f);
             platform1 = createBox(270,200,2,120,true , "data",-1f);
+            platform2 = createBox(1920,200,4000,2,true , "data",-1f);
 
             contactListener = new MyContactListener(birdProp);
             world.setContactListener(contactListener);
@@ -586,7 +588,7 @@ public class Level_1 implements Screen{
             launched = true;
 
 
-            Vector2 launchForce = slingStart.cpy().sub(slingEnd).scl(10f); // Scale for desired launch power
+            Vector2 launchForce = slingStart.cpy().sub(slingEnd).scl(10f);
             PP.setLinearVelocity(launchForce.scl(1 / PPM));
 
 
@@ -594,6 +596,17 @@ public class Level_1 implements Screen{
             checkWinScheduled = true;
         }
 
+         if (launched && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        // Trigger power based on the current player
+        if (turn == 0) {
+            activateStraightDown(PP);
+        } else if (turn == 1) {
+            activateSpeedBoost(PP);
+
+        } else if (turn == 2) {
+            activateExplosion(PP);
+        }
+    }
 
         if (timer > 0) {
             timer -= Gdx.graphics.getDeltaTime();
@@ -605,7 +618,45 @@ public class Level_1 implements Screen{
             checkWinScheduled = false;
         }
     }
+    private void activateStraightDown(Body bird) {
+        bird.setLinearVelocity(0, -20f); // Set a downward velocity
+        System.out.println("Straight-down power activated!");
+    }
 
+
+    private void activateSpeedBoost(Body bird) {
+        Vector2 boost = bird.getLinearVelocity().nor().scl(50f); // Boost velocity
+        bird.setLinearVelocity(boost);
+        System.out.println("Speed boost activated!");
+    }
+
+    private void activateExplosion(Body bird) {
+
+        Vector2 position = bird.getPosition();
+        float explosionRadius = 10f;
+
+        for (Body body : getAllBodiesInRadius(position, explosionRadius)) {
+            Vector2 force = body.getPosition().cpy().sub(position).nor().scl(20f);
+            body.applyLinearImpulse(force, body.getWorldCenter(), true);
+        }
+        System.out.println("Explosion power activated!");
+    }
+
+
+
+
+private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
+    List<Body> bodies = new ArrayList<>();
+    world.QueryAABB(fixture -> {
+            if (fixture.getBody().getPosition().dst(position) <= radius) {
+                bodies.add(fixture.getBody());
+            }
+            return true;
+        },
+        position.x - radius, position.y - radius,
+        position.x + radius, position.y + radius);
+    return bodies;
+}
 
 
     private void drawSlingLine(Vector2 start, Vector2 end) {
