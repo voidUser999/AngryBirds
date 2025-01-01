@@ -6,7 +6,7 @@ public class PolygonBodyData implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private float[] vertices;
-    private String textureName; // The texture location associated with the body
+    private String textureName;
     private float x, y, angle, velocityX, velocityY;
 
     public PolygonBodyData(float[] vertices, String textureName, float x, float y, float angle, float velocityX, float velocityY) {

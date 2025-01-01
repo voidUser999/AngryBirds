@@ -51,20 +51,20 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Enable blending for transparency
+
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         update(delta);
 
-        // Render the TiledMap layers (all layers will be affected by the blend state)
+
         tmr.render();
 
         app.batch.begin();
         app.font24.draw(app.batch, "SCREEN:PLAY", 20, 20);
         app.batch.end();
 
-        // Disable blending after rendering
+
         Gdx.gl.glDisable(GL20.GL_BLEND);
     }
 

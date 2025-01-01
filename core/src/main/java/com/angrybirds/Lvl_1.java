@@ -91,8 +91,8 @@ public class Lvl_1 implements Screen {
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isPaused = true;  // Pause the game
-                Gdx.input.setInputProcessor(pauseStage);  // Switch input to pause menu
+                isPaused = true;
+                Gdx.input.setInputProcessor(pauseStage);
             }
         });
     }
@@ -208,7 +208,7 @@ public class Lvl_1 implements Screen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.input.setInputProcessor(stage);
-        // Input handling
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.W)) {
             isEndScreen = true;
             bb =0;

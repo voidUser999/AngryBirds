@@ -34,6 +34,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 import static utils.Constants.PPM;
@@ -74,6 +75,17 @@ public class Level_1 implements Screen{
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private Boolean resetWorld = true;
 
+    private boolean isDragging = false;
+    private Vector2 ss = new Vector2();
+    private Vector2 se = new Vector2();
+    private float maxd = 100f;
+    private Vector2 birdPosV = new Vector2();
+    private int trajP = 20;
+    private float trajTS = 0.1f;
+
+    private float timer = 0;
+    private boolean checkWinScheduled = false;
+    private boolean powerActivated = false;
 
     public Level_1(final angryBirds app){
 
@@ -195,6 +207,7 @@ public class Level_1 implements Screen{
         pauseStage.clear();
         endStage1.clear();
         endStage2.clear();
+
         initButtons();
         initPauseMenu();
         initEndStageW();
@@ -229,7 +242,7 @@ public class Level_1 implements Screen{
         back.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isPaused = true;  // Pause the game
+                isPaused = true;
                 Gdx.input.setInputProcessor(pauseStage);
             }
         });
@@ -243,7 +256,7 @@ public class Level_1 implements Screen{
 
         Image background = new Image(new TextureRegionDrawable(blackTexture));
         Image mmb = new Image(new TextureRegionDrawable(whiteTexture));
-        // A black texture
+
         mmb.addAction(sequence(alpha(0), parallel(fadeIn(0.5f), moveBy(0,-20, 0.5f , Interpolation.pow5Out))));
 
         background.setSize(angryBirds.V_WIDTH, angryBirds.V_HEIGHT);
@@ -255,7 +268,7 @@ public class Level_1 implements Screen{
         pauseStage.addActor(mmb);
 
 
-        // Resume button
+
         ImageButton resumeButton = new ImageButton(new TextureRegionDrawable(resumeTex));
         resumeButton.setPosition((float) angryBirds.V_WIDTH / 2 - 275, (float) angryBirds.V_HEIGHT / 2 -20);
         resumeButton.setSize(200, 300);
@@ -280,6 +293,7 @@ public class Level_1 implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 isPaused = false;
+                TiledObjectUtil.clearAllHashMaps();
                 clearWorld();
                 launched = false;
                 isDestroyed = false;
@@ -326,7 +340,6 @@ public class Level_1 implements Screen{
 
         endImage = new Image(new TextureRegionDrawable(endTex));
 
-        //endImage = new Image(new TextureRegionDrawable(end2Tex));
 
 
         endImage.setPosition((float) angryBirds.V_WIDTH / 2 - endTex.getWidth() / 2, (float) angryBirds.V_HEIGHT / 2 - endTex.getHeight() / 2);
@@ -368,9 +381,6 @@ public class Level_1 implements Screen{
         background.setColor(1, 1, 1, 0.3f);
 
 
-
-
-
         endImage = new Image(new TextureRegionDrawable(end2Tex));
 
 
@@ -409,7 +419,7 @@ public class Level_1 implements Screen{
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // Check if the game is paused
+
         if (!isPaused && !isEndScreen) {
             update(delta);
             handleInput();
@@ -440,7 +450,7 @@ public class Level_1 implements Screen{
 
         if (isDragging) {
             app.batch.begin();
-            drawSlingLine(slingStart, slingEnd);
+            drawSlingLine(ss, se);
             app.batch.end();
         }
 
@@ -503,8 +513,8 @@ public class Level_1 implements Screen{
     }
 
     private boolean isLowMomentum = false;
-    private final float MOMENTUM_THRESHOLD = 0.5f;
-    private final float MOMENTUM_TIMEOUT = 1.5f;
+    private final float maxMomentum = 0.5f;
+    private final float mTime = 1.5f;
     public void update(float delta){
         stage.act(delta);
         world.step(1/120f , 6 , 2);
@@ -525,7 +535,7 @@ public class Level_1 implements Screen{
             Vector2 velocity = PP.getLinearVelocity();
             float speed = velocity.len();
 
-            if (speed < MOMENTUM_THRESHOLD) {
+            if (speed < maxMomentum) {
 
                 if (!isLowMomentum) {
                     isLowMomentum = true;
@@ -544,27 +554,15 @@ public class Level_1 implements Screen{
      boolean launched = false;
 
 
-    private boolean isDragging = false;
-    private Vector2 slingStart = new Vector2();
-    private Vector2 slingEnd = new Vector2();
-    private float maxDragDistance = 100f;
-    private Vector2 visualBirdPosition = new Vector2();
-    private int trajectoryPoints = 20;
-    private float trajectoryTimeStep = 0.1f;
 
-    private float timer = 0;
-    private boolean checkWinScheduled = false;
 
     private void handleInput() {
 
         if (turn == 0) {
-
             PP = player;
         } else if (turn == 2) {
-
             PP = player2;
         } else if (turn == 1) {
-
             PP = player1;
         }
 
@@ -576,55 +574,52 @@ public class Level_1 implements Screen{
 
             if (!isDragging && PP.getPosition().dst(touchPoint.scl(1 / PPM)) <= 1) {
                 isDragging = true;
-                slingStart.set(PP.getPosition().scl(PPM));
+                ss.set(PP.getPosition().scl(PPM));
             }
 
             if (isDragging) {
-                slingEnd.set(touchPoint);
+                se.set(touchPoint);
 
-
-                if (slingEnd.dst(slingStart) > maxDragDistance) {
-                    slingEnd.set(slingStart.cpy().add(slingEnd.cpy().sub(slingStart).nor().scl(maxDragDistance)));
+                if (se.dst(ss) > maxd) {
+                    se.set(ss.cpy().add(se.cpy().sub(ss).nor().scl(maxd)));
                 }
 
-
-                visualBirdPosition.set(slingEnd.cpy());
+                birdPosV.set(se.cpy());
             }
         } else if (isDragging) {
             isDragging = false;
             launched = true;
+            powerActivated = false;
 
-
-            Vector2 launchForce = slingStart.cpy().sub(slingEnd).scl(10f);
+            Vector2 launchForce = ss.cpy().sub(se).scl(10f);
             PP.setLinearVelocity(launchForce.scl(1 / PPM));
-
 
             timer = 3f;
             checkWinScheduled = true;
         }
 
-         if (launched && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (launched && !powerActivated && Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
 
-        if (turn == 0) {
-            activateStraightDown(PP);
-        } else if (turn == 1) {
-            activateSpeedBoost(PP);
-
-        } else if (turn == 2) {
-            activateExplosion(PP);
+            if (turn == 0) {
+                activateStraightDown(PP);
+            } else if (turn == 1) {
+                activateSpeedBoost(PP);
+            } else if (turn == 2) {
+                activateExplosion(PP);
+            }
+            powerActivated = true;
         }
-    }
 
         if (timer > 0) {
             timer -= Gdx.graphics.getDeltaTime();
         }
-
 
         if (timer <= 0 && checkWinScheduled) {
             checkWin();
             checkWinScheduled = false;
         }
     }
+
     private void activateStraightDown(Body bird) {
         bird.setLinearVelocity(0, -20f); // Set a downward velocity
         System.out.println("Straight-down power activated!");
@@ -685,8 +680,8 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.PINK);
 
-        for (int i = 0; i < trajectoryPoints; i++) {
-            float time = i * trajectoryTimeStep;
+        for (int i = 0; i < trajP; i++) {
+            float time = i * trajTS;
 
 
             float x = position.x + velocity.x * time;
@@ -820,7 +815,7 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
 
         def.type = isStatic ? BodyDef.BodyType.StaticBody : BodyDef.BodyType.DynamicBody;
         def.position.set(x / PPM, y / PPM);
-        def.fixedRotation = true; // Prevents the body from rotating
+        def.fixedRotation = true;
 
 
         pBody = world.createBody(def);
@@ -853,7 +848,7 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
 
                 destroyBird();
             }
-        }, MOMENTUM_TIMEOUT);
+        }, mTime);
     }
     private void checkWin() {
         boolean allEnemiesDestroyed = true;
@@ -985,8 +980,8 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             float velocityY = body.getLinearVelocity().y;
 
             if ("img_map/mats/tri1_wood1_1_r.png".equals(type) || " img_map/mats/sqr_wood1_1.png".equals(type) || "img_map/mats/sqr_stone1_1.png".equals(type) ||"img_map/mats/sqr_wood1_1.png".equals(type) ||"img_map/mats/s_stone1_1.png".equals(type) ||"img_map/mats/long_wood1_1_v.png".equals(type) ||"img_map/mats/wood1_1.png".equals(type) ||"img_map/mats/tri1_wood1_1.png".equals(type) ||"img_map/mats/long_wood1_1.png".equals(type) ||"img_map/pigs/pig4_1.png".equals(type) ||"img_map/mats/s_glass1_1.png".equals(type)||"img_map/pigs/pig3_1.png".equals(type) ) {
-                // Handle polygon-specific data
-                Fixture fixture = body.getFixtureList().first(); // Assuming one fixture per body
+
+                Fixture fixture = body.getFixtureList().first();
                 if (fixture.getShape() instanceof PolygonShape) {
                     PolygonShape shape = (PolygonShape) fixture.getShape();
                     int vertexCount = shape.getVertexCount();
@@ -1007,9 +1002,16 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
                 bodyDataList.add(new BodyData(x, y, angle, velocityX, velocityY, type));
             }
         }
+        Map<String, Map<String, Object>> serializedMaps = new HashMap<>();
+        serializedMaps.put("woodProp", serializeMap(TiledObjectUtil.getWoodProp()));
+        serializedMaps.put("stoneProp", serializeMap(TiledObjectUtil.getStoneProp()));
+        serializedMaps.put("glassProp", serializeMap(TiledObjectUtil.getGlassProp()));
+        serializedMaps.put("enemy0Prop", serializeMap(TiledObjectUtil.getEnemy0Prop()));
+        serializedMaps.put("enemy1Prop", serializeMap(TiledObjectUtil.getEnemy1Prop()));
+        serializedMaps.put("enemy2Prop", serializeMap(TiledObjectUtil.getEnemy2Prop()));
 
 
-        GameState gameState = new GameState(bodyDataList, polygonBodyDataList);
+        GameState gameState = new GameState(bodyDataList, polygonBodyDataList , serializedMaps);
 
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("game_save.dat"))) {
             out.writeObject(gameState);
@@ -1018,6 +1020,24 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             e.printStackTrace();
         }
     }
+    private Map<String, Object> serializeMap(Map<Body, ?> map) {
+        Map<String, Object> serializedMap = new HashMap<>();
+
+
+        for (Map.Entry<Body, ?> entry : map.entrySet()) {
+
+            String keyAsString = entry.getKey().toString();
+
+
+            Object value = entry.getValue();
+
+
+            serializedMap.put(keyAsString, value);
+        }
+
+        return serializedMap;
+    }
+
 
     private String getBodyType(Body body) {
 
@@ -1048,6 +1068,7 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             GameState gameState = (GameState) in.readObject();
             List<BodyData> bodyDataList = gameState.getBodyDataList();
             List<PolygonBodyData> polygonBodyDataList = gameState.getPolygonBodyDataList();
+            Map<String, Map<String, Object>> serializedMaps = gameState.getSerializedMaps();
 
             clearWorld();
             world = new World(new Vector2(0, -9.8f), false);
@@ -1059,13 +1080,31 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             for (PolygonBodyData polygonBodyData : polygonBodyDataList) {
                 createPolygonBodyFromData(polygonBodyData);
             }
+            TiledObjectUtil.setWoodProp(deserializeMap(serializedMaps.get("woodProp")));
+            TiledObjectUtil.setStoneProp(deserializeMap(serializedMaps.get("stoneProp")));
+            TiledObjectUtil.setGlassProp(deserializeMap(serializedMaps.get("glassProp")));
+            TiledObjectUtil.setEnemy0Prop(deserializeMap(serializedMaps.get("enemy0Prop")));
+            TiledObjectUtil.setEnemy1Prop(deserializeMap(serializedMaps.get("enemy1Prop")));
+            TiledObjectUtil.setEnemy2Prop(deserializeMap(serializedMaps.get("enemy2Prop")));
+
+
 
             System.out.println("Game state loaded successfully.");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    private <T> HashMap<Body, T> deserializeMap(Map<String, Object> serializedMap) {
 
+        HashMap<Body, T> deserializedMap = new HashMap<>();
+
+
+        for (Map.Entry<String, Object> entry : serializedMap.entrySet()) {
+            deserializedMap.put(null, (T) entry.getValue());
+        }
+
+        return deserializedMap;
+    }
     private void createPolygonBodyFromData(PolygonBodyData polygonBodyData) {
         BodyDef def = new BodyDef();
         def.position.set(polygonBodyData.getX(), polygonBodyData.getY());
@@ -1133,9 +1172,7 @@ private List<Body> getAllBodiesInRadius(Vector2 position, float radius) {
             body.createFixture(fixtureDef);
             shape.dispose();
         }
-        else if (bodyData.getType().equals("img_map/mats/s_glass1_1.png")){
 
-        }
 
     }
 

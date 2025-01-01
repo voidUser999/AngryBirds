@@ -186,7 +186,7 @@ public class MyContactListener implements ContactListener {
         System.out.println("Relative Velocity: " + relativeVelocity);
 
         if (relativeVelocity > damageThreshold) {
-            float damage = relativeVelocity * 0.5f; // Scale damage with velocity
+            float damage = relativeVelocity * 0.5f;
             System.out.println("Applying Damage: " + damage);
 
             applyDamageToStructure(bodyA, damage);
@@ -231,7 +231,7 @@ public class MyContactListener implements ContactListener {
         System.out.println("Relative Velocity: " + relativeVelocity);
 
         if (relativeVelocity > damageThreshold) {
-            float damage = relativeVelocity * 0.2f; // Adjust damage scaling for pigs
+            float damage = relativeVelocity * 0.2f;
             System.out.println("Applying Damage: " + damage);
 
             applyDamageToStructure(structureFixture, damage);
@@ -240,7 +240,7 @@ public class MyContactListener implements ContactListener {
     }
 
     private void applyDamageToPig(Fixture pigBody, float damage) {
-        Prop pigProp = getPigProp(pigBody); // Fetch pig properties
+        Prop pigProp = getPigProp(pigBody);
         if (pigProp != null) {
             float pigHp = pigProp.getHp();
             System.out.println("Pig HP Before Damage: " + pigHp);
@@ -266,7 +266,6 @@ public class MyContactListener implements ContactListener {
                      TiledObjectUtil.getEnemy2Prop().get(pigBody.getBody()).setHp((int) pigHp);
                      System.out.println("Updated Pig2 Health: " + pigHp);
                      System.out.println("Pig2 is destroyed! Marking for destruction...");
-
                 }
 
                 markForDestruction(pigBody.getBody());
@@ -336,14 +335,10 @@ public class MyContactListener implements ContactListener {
         }
         else if ("pig1".equals(ud)) {
             structHp = TiledObjectUtil.getEnemy1Prop().get(otherBody).getHp();
-
         }
         else if ("pig2".equals(ud)) {
             structHp = TiledObjectUtil.getEnemy2Prop().get(otherBody).getHp();
-
         }
-
-
 
         System.out.println("Structure Health Before Damage: " + structHp);
 

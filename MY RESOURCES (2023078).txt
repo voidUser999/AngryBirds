@@ -1,0 +1,9 @@
+MY RESOURCES (2023078)
+
+SCENE2D - https://youtube.com/playlist?list=PLD_bW3UTVsEkPsT2JfVcZmAjmWByIpRvT&si=DD6cIpICOGUJC2Gr
+
+BOX2D - https://youtube.com/playlist?list=PLD_bW3UTVsElsuvyKcYXHLnWb8bD0EQNI&si=vXv2n26cJ1_Yljkw
+
+JAVA - https://firstcode.school/
+
+       https://www.geeksforgeeks.org/serialization-in-java/

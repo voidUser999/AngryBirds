@@ -231,7 +231,7 @@ public class MainMenuScreen implements Screen {
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position
+
                 if (pointer == -1) {
                     buttonExit.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
@@ -261,16 +261,16 @@ public class MainMenuScreen implements Screen {
         buttonSettings.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+
+                if (pointer == -1) {
                     buttonSettings.addAction(Actions.moveBy(+5, -5, 0.1f));
                 }
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
+
+                if (pointer == -1) {
                     buttonSettings.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
             }
@@ -342,33 +342,6 @@ public class MainMenuScreen implements Screen {
                 }
             }
         });
-//        button2.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//                // Toggle sound mute state using the toggleSound() method from angryBirds
-//                app.toggleSound();  // Assuming 'angryBirdsInstance' is your angryBirds class instance
-//
-//                // Save the sound mute state to preferences
-//                preferences.putBoolean("isSoundMuted", app.isSoundMuted);
-//                preferences.flush();
-//
-//                // Update button image
-//                updateSoundButtonImage();
-//
-//                // Print the state of sound mute
-//                if (app.isSoundMuted) {
-//                    System.out.println("Sound is muted");
-//                } else {
-//                    System.out.println("Sound is unmuted");
-//                }
-//            }
-//        });
-
-
-
-
-
-
 
 
         TextureRegionDrawable buttonUp2 = new TextureRegionDrawable(new TextureRegion(m));
@@ -387,26 +360,6 @@ public class MainMenuScreen implements Screen {
 
         updateButtonImage();
 
-
-//        button3.addListener(new ClickListener() {
-//            @Override
-//            public void clicked(InputEvent event, float x, float y) {
-//
-//                isMusicMuted = !isMusicMuted;
-//                preferences.putBoolean("isMusicMuted", isMusicMuted);
-//                preferences.flush();
-//
-//
-//                updateButtonImage();
-//
-//
-//                if (isMusicMuted) {
-//                    System.out.println("Music is muted");
-//                } else {
-//                    System.out.println("Music is unmuted");
-//                }
-//            }
-//        });
 
 
 
@@ -443,8 +396,8 @@ public class MainMenuScreen implements Screen {
         TextureRegionDrawable buttonOver3 = new TextureRegionDrawable(new TextureRegion(c2));
 
         buttonStyle = new ImageButton.ImageButtonStyle();
-        buttonStyle.up = buttonUp3;      // Default button texture
-        buttonStyle.down = buttonDown3;  // Texture when button is pressed
+        buttonStyle.up = buttonUp3;
+        buttonStyle.down = buttonDown3;
         buttonStyle.over = buttonOver3;
 
 
@@ -455,16 +408,16 @@ public class MainMenuScreen implements Screen {
         button4.addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
-                // Move slightly down and left when hovered
-                if (pointer == -1) {  // Ensure it's only triggered by hover, not by touch
+
+                if (pointer == -1) {
                     button4.addAction(Actions.moveBy(+5, -5, 0.1f));
                 }
             }
 
             @Override
             public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
-                // Move back to the original position when the mouse leaves
-                if (pointer == -1) {  // Ensure it's only triggered by hover exit
+
+                if (pointer == -1) {
                     button4.addAction(Actions.moveBy(-5, 5, 0.1f));
                 }
             }
@@ -497,10 +450,10 @@ public class MainMenuScreen implements Screen {
         update(delta);
 
         if (settingsClicked) {
-            settingsStage.act(delta);  // Update the settings stage
-            settingsStage.draw();      // Draw the settings stage when it's clicked
+            settingsStage.act(delta);
+            settingsStage.draw();
         } else {
-            stage.draw();  // Draw the main stage if the settings menu is not active
+            stage.draw();
         }
 
         app.batch.begin();

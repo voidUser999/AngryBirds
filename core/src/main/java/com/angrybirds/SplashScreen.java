@@ -25,7 +25,7 @@ public class SplashScreen implements Screen{
         this.stage = new Stage(new StretchViewport(angryBirds.V_WIDTH , angryBirds.V_HEIGHT , app.camera));
         Gdx.input.setInputProcessor(stage);
 
-//
+
     }
     @Override
     public void show() {

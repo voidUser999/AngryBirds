@@ -58,7 +58,11 @@ public class lessd {
 
         Assertions.assertEquals(true , a , "Structure is Pig0");
         Assertions.assertEquals(true, b, "Structure is Pig1");
-        Assertions.assertEquals(false, c, "Structure is Pig2");
+        Assertions.assertEquals(false, c, "Structure is not Pig");
 
     }
+
+
+    
+
 }
